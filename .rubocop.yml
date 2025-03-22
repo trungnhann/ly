@@ -1,0 +1,129 @@
+# @see https://docs.google.com/spreadsheets/d/1gOXRk-IsNY1-ZMUYQ_H_-CfegBHzoZBCsRS-dfven08/edit#gid=1662326043
+require: rubocop-rails
+
+# Common configuration.
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.3
+  Exclude:
+    - 'tmp/**/*'
+    - 'vendor/**/*'
+    - 'spec/spec_helper.rb'
+    - 'db/data_schema.rb'
+    - 'bin/bundle'
+    - 'bin/yarn'
+    - 'db/schema.rb'
+
+Style/WordArray:
+  Enabled: true
+
+Style/NumericLiterals:
+  Enabled: true
+  Exclude:
+    - 'db/schema.rb'
+
+Layout/LineLength:
+  Enabled: true
+  AllowedPatterns: ['\A#']
+  Exclude:
+    - 'config/initializers/*.rb'
+    - 'app/views/admin/*/*.arb'
+
+Lint/BooleanSymbol:
+  Enabled: true
+  Exclude:
+    - 'db/migrate/*'
+
+Lint/LiteralAsCondition:
+  Enabled: true
+
+Lint/UselessAssignment:
+  Enabled: true
+
+Naming/AccessorMethodName:
+  Enabled: true
+
+
+Naming/FileName:
+  Enabled: true
+
+Naming/MemoizedInstanceVariableName:
+  Enabled: true
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Lint/MissingSuper:
+  Enabled: false
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/BlockNesting:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/ParameterLists:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+Naming/VariableNumber:
+  Enabled: false
+
+Rails/BulkChangeTable:
+  Enabled: false
+
+Rails/I18nLocaleTexts:
+  Enabled: false
+
+Rails/ThreeStateBooleanColumn:
+  Enabled: false
+
+Rails/CreateTableWithTimestamps:
+  Enabled: false
+
+Rails/HasManyOrHasOneDependent:
+  Enabled: false
+
+Rails/InverseOf:
+  Enabled: false
+
+Rails/OutputSafety:
+  Enabled: false
+
+Rails/ReversibleMigration:
+  Enabled: false
+
+Rails/SkipsModelValidations:
+  Enabled: false
+
+Rails/TimeZone:
+  Enabled: false
+
+Rails/UniqueValidationWithoutIndex:
+  Enabled: false
+
+Rails/UnknownEnv:
+  Enabled: false
+
+Security/Eval:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
