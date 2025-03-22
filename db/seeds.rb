@@ -1,4 +1,4 @@
-puts '🌱 Seeding admin user...'
+Rails.logger.debug '🌱 Seeding admin user...'
 
 AdminUser.create!(
   email: 'admin@example.com',
@@ -7,4 +7,4 @@ AdminUser.create!(
   user_type: :superadmin
 )
 
-puts '✅ Seeding admin user completed!'
+Rails.logger.debug '✅ Seeding admin user completed!'

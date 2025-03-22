@@ -20,8 +20,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_22_092141) do
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer "user_type", default: 2
-    t.integer "integer", default: 2
+    t.integer "user_type", default: 1
+    t.integer "integer", default: 1
     t.string "jti"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -29,5 +29,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_22_092141) do
     t.index ["jti"], name: "index_admin_users_on_jti"
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
     t.index ["user_type"], name: "index_admin_users_on_user_type"
+  end
+
+  create_table "students", force: :cascade do |t|
+    t.string "code", null: false
+    t.string "full_name", null: false
+    t.string "id_card_number", null: false
+    t.string "email", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_students_on_code", unique: true
+    t.index ["email"], name: "index_students_on_email", unique: true
+    t.index ["id_card_number"], name: "index_students_on_id_card_number", unique: true
   end
 end
