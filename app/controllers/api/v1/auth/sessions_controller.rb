@@ -27,7 +27,7 @@ module Api
         protected
 
         def sign_in_params
-          params.require(:user).permit(:email, :password)
+          params.expect(user: %i[email password])
         end
 
         private

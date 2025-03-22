@@ -32,10 +32,23 @@ gem 'devise'
 gem 'devise-jwt'
 gem 'jsonapi-serializer'
 
+gem 'aws-sdk-s3'
+gem 'pagy'
+
+gem 'mongoid', '~> 8.1'
+gem 'mongoid-paperclip', require: 'mongoid_paperclip'
+gem 'mongoid-slug'
+# gem "mongoid-history" # Tạm thời tắt
+# gem "mongoid-audit" # Tạm thời tắt
+# gem "kaminari" # Tạm thời tắt
+# gem "kaminari-mongoid" # Tạm thời tắt
+
 group :development, :test do
   gem 'debug', platforms: %i[mri windows], require: 'debug/prelude'
 
   gem 'brakeman', require: false
 
   gem 'rubocop-rails-omakase', require: false
+
+  gem 'dotenv-rails'
 end
