@@ -35,7 +35,7 @@ gem 'jsonapi-serializer'
 gem 'aws-sdk-s3'
 gem 'pagy'
 
-gem 'mongoid', '~> 8.1'
+gem 'mongoid', '~> 9.0'
 gem 'mongoid-paperclip', require: 'mongoid_paperclip'
 gem 'mongoid-slug'
 # gem "mongoid-history" # Tạm thời tắt

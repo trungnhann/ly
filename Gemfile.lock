@@ -193,11 +193,10 @@ GEM
     minitest (5.25.5)
     mongo (2.21.0)
       bson (>= 4.14.1, < 6.0.0)
-    mongoid (8.1.10)
+    mongoid (9.0.6)
       activemodel (>= 5.1, < 8.1, != 7.0.0)
       concurrent-ruby (>= 1.0.5, < 2.0)
       mongo (>= 2.18.0, < 3.0.0)
-      ruby2_keywords (~> 0.0.5)
     mongoid-paperclip (0.1.0)
       kt-paperclip
       mongoid
@@ -331,7 +330,6 @@ GEM
       rubocop-performance (>= 1.24)
       rubocop-rails (>= 2.30)
     ruby-progressbar (1.13.0)
-    ruby2_keywords (0.0.5)
     securerandom (0.4.1)
     solid_cable (3.0.7)
       actioncable (>= 7.2)
@@ -409,7 +407,7 @@ DEPENDENCIES
   dotenv-rails
   jsonapi-serializer
   kamal
-  mongoid (~> 8.1)
+  mongoid (~> 9.0)
   mongoid-paperclip
   mongoid-slug
   pagy
