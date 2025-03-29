@@ -2,9 +2,9 @@ module ServiceConfig
   class << self
     def fpt
       {
-        base_uri: 'https://api.fpt.ai/vision/idr/vnm',
-        api_key: 'b3vlzpFoPCJ6pzSDHdttDHw7ScWqTrfU',
-        timeout: 30
+        base_uri: Rails.application.credentials.dig(:fpt, :base_uri),
+        api_key: Rails.application.credentials.dig(:fpt, :api_key),
+        timeout: Rails.application.credentials.dig(:fpt, :timeout)
       }
     end
   end
