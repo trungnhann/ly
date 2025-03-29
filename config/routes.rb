@@ -14,6 +14,9 @@ Rails.application.routes.draw do
                                }
       resources :students do
         resource :metadata, only: %i[show create update destroy], controller: 'student_metadata'
+        collection do
+          post :scan_id_card
+        end
         member do
           get :metadata, to: 'students#show_metadata'
         end

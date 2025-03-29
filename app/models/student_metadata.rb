@@ -10,9 +10,11 @@ class StudentMetadata
   field :avatar_path, type: String
   field :id_card_front_path, type: String
   field :id_card_back_path, type: String
+  field :phone, type: String
+  field :major, type: String
+  field :specialization, type: String
 
   field :id_card, type: Hash, default: {}
-  field :additional_info, type: Hash, default: {}
 
   slug :student_id
 
@@ -56,6 +58,5 @@ class StudentMetadata
 
   def ensure_hash_fields
     self.id_card = {} if id_card.nil?
-    self.additional_info = {} if additional_info.nil?
   end
 end

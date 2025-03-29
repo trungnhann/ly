@@ -47,8 +47,7 @@ module Api
           metadata: [:avatar,
                      :id_card_front,
                      :id_card_back,
-                     { id_card: %i[address issue_date issue_place expiry_date],
-                       additional_info: %i[address phone nationality] }]
+                     { id_card: %i[address issue_date issue_place expiry_date] }]
         )
       end
 

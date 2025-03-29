@@ -33,6 +33,28 @@ module Api
         end
       end
 
+      # POST /students/scan_id_card
+      def scan_id_card
+        id_card_data = FptIdCardService.call(params[:image])
+        student = Student.find_by(id_card_number: id_card_data[:id_card][:number])
+
+        if student
+          Rails.logger.info "Found existing student: #{student.id}"
+          update_student_metadata(student, id_card_data)
+          json_response(student, StudentSerializer)
+        else
+          Rails.logger.info "No student found with ID card number: #{id_card_data[:id_card][:number]}"
+          raise ActiveRecord::RecordNotFound,
+                "Student not found with ID card number: #{id_card_data[:id_card][:number]}"
+        end
+      rescue ServiceError => e
+        Rails.logger.error "Service error: #{e.message}"
+        render json: { error: e.message }, status: :unprocessable_entity
+      rescue StandardError => e
+        Rails.logger.error "Error scanning ID card: #{e.message}"
+        render json: { error: e.message }, status: :internal_server_error
+      end
+
       # POST /students
       def create
         @student = Student.new(student_params)
@@ -77,9 +99,11 @@ module Api
         return nil if params[:student][:metadata].blank?
 
         params.require(:student).require(:metadata).permit(
-          id_card: %i[address issue_date issue_place expiry_date],
-          additional_info: %i[address phone nationality]
-        ).to_h
+          :phone,
+          :major,
+          :specialization,
+          id_card: %i[address gender issue_date issue_place expiry_date]
+        )
       end
 
       def handle_metadata
@@ -88,7 +112,9 @@ module Api
         begin
           metadata = @student.metadata || StudentMetadata.new(student_id: @student.id.to_s)
           metadata.id_card = metadata_params[:id_card]
-          metadata.additional_info = metadata_params[:additional_info]
+          metadata.phone = metadata_params[:phone]
+          metadata.major = metadata_params[:major]
+          metadata.specialization = metadata_params[:specialization]
 
           log_action = metadata.new_record? ? 'Creating' : 'Updating'
           Rails.logger.info "#{log_action} metadata with: #{metadata.attributes.inspect}"
@@ -100,6 +126,24 @@ module Api
           Rails.logger.error "Failed to handle metadata: #{e.message}"
           Rails.logger.error e.backtrace.join("\n")
         end
+      end
+
+      def update_student_metadata(student, id_card_data)
+        metadata = student.metadata || StudentMetadata.new(student_id: student.id.to_s)
+        current_id_card = metadata.id_card || {}
+
+        new_id_card = {
+          address: id_card_data[:id_card][:address],
+          issue_date: id_card_data[:id_card][:issue_date],
+          issue_place: id_card_data[:id_card][:issue_place],
+          expiry_date: id_card_data[:id_card][:expiry_date]
+        }
+
+        # Chỉ update khi có thay đổi
+        return unless current_id_card != new_id_card
+
+        metadata.id_card = new_id_card
+        metadata.save!
       end
     end
   end

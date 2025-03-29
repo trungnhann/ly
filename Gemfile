@@ -43,6 +43,9 @@ gem 'mongoid-slug'
 # gem "kaminari" # Tạm thời tắt
 # gem "kaminari-mongoid" # Tạm thời tắt
 
+# HTTP client
+gem "httparty"
+
 group :development, :test do
   gem 'debug', platforms: %i[mri windows], require: 'debug/prelude'
 
