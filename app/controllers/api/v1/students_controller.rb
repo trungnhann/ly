@@ -92,7 +92,7 @@ module Api
 
       # Only allow a list of trusted parameters through.
       def student_params
-        params.require(:student).permit(:code, :full_name, :id_card_number, :email)
+        params.expect(student: %i[code full_name id_card_number email])
       end
 
       def metadata_params

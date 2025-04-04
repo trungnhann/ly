@@ -1,35 +1,35 @@
-require "test_helper"
+require 'test_helper'
 
 class CertificatesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @certificate = certificates(:one)
   end
 
-  test "should get index" do
+  test 'should get index' do
     get certificates_url, as: :json
     assert_response :success
   end
 
-  test "should create certificate" do
-    assert_difference("Certificate.count") do
+  test 'should create certificate' do
+    assert_difference('Certificate.count') do
       post certificates_url, params: { certificate: {} }, as: :json
     end
 
     assert_response :created
   end
 
-  test "should show certificate" do
+  test 'should show certificate' do
     get certificate_url(@certificate), as: :json
     assert_response :success
   end
 
-  test "should update certificate" do
+  test 'should update certificate' do
     patch certificate_url(@certificate), params: { certificate: {} }, as: :json
     assert_response :success
   end
 
-  test "should destroy certificate" do
-    assert_difference("Certificate.count", -1) do
+  test 'should destroy certificate' do
+    assert_difference('Certificate.count', -1) do
       delete certificate_url(@certificate), as: :json
     end
 

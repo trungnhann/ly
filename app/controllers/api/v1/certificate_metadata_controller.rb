@@ -41,7 +41,7 @@ module Api
       end
 
       def certificate_metadata_params
-        params.require(:certificate_metadata).permit(:certificate_id, :certificate_type)
+        params.expect(certificate_metadata: %i[certificate_id certificate_type])
       end
     end
   end
