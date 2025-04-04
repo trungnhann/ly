@@ -1,7 +1,7 @@
 development:
   clients:
     default:
-      uri: mongodb+srv://trungnhanforwork:Nhan280803%40@cluster0.qalmkcs.mongodb.net/cmt?retryWrites=true&w=majority&appName=Cluster0&tls=true
+      uri: <%= Rails.application.credentials.dig(:development, :mongodb_uri) %>
       options:
         server_selection_timeout: 5
         connect_timeout: 5
@@ -12,7 +12,7 @@ development:
 test:
   clients:
     default:
-      uri: mongodb+srv://trungnhanforwork:Nhan280803%40@cluster0.qalmkcs.mongodb.net/datn_cmt_test?retryWrites=true&w=majority&appName=Cluster0&tls=true
+      uri: <%= Rails.application.credentials.dig(:development, :mongodb_uri) %>
       options:
         server_selection_timeout: 5
         connect_timeout: 5

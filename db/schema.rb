@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_22_092141) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_29_123702) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -31,6 +31,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_22_092141) do
     t.index ["user_type"], name: "index_admin_users_on_user_type"
   end
 
+  create_table "certificates", force: :cascade do |t|
+    t.string "code", null: false
+    t.string "title", null: false
+    t.integer "certificate_type", null: false
+    t.date "issue_date", null: false
+    t.date "expiry_date"
+    t.boolean "is_verified", default: true
+    t.string "metadata_id"
+    t.bigint "student_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_certificates_on_code", unique: true
+    t.index ["student_id"], name: "index_certificates_on_student_id"
+  end
+
   create_table "students", force: :cascade do |t|
     t.string "code", null: false
     t.string "full_name", null: false
@@ -42,4 +57,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_22_092141) do
     t.index ["email"], name: "index_students_on_email", unique: true
     t.index ["id_card_number"], name: "index_students_on_id_card_number", unique: true
   end
+
+  add_foreign_key "certificates", "students"
 end

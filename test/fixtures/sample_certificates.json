@@ -1,0 +1,72 @@
+{
+  "degree": {
+    "certificate": {
+      "code": "DEGREE-2024-001",
+      "title": "Bằng Kỹ sư Công nghệ Thông tin",
+      "type": 1,
+      "issueDate": "2024-03-30",
+      "expiryDate": null,
+      "isVerified": true,
+      "student_id": 1
+    },
+    "metadata": {
+      "certificate_type": 1,
+      "issuer": "Đại học FPT",
+      "description": "Bằng tốt nghiệp ngành Kỹ sư Công nghệ Thông tin",
+      "image_path": "/certificates/degree/2024/001.jpg",
+      "degree_info": {
+        "level": "Đại học",
+        "major": "Công nghệ Thông tin",
+        "specialization": "Kỹ thuật Phần mềm",
+        "grade": "Giỏi",
+        "graduation_year": 2024
+      }
+    }
+  },
+  "certificate": {
+    "certificate": {
+      "code": "CERT-2024-001",
+      "title": "Chứng chỉ IELTS Academic",
+      "type": 2,
+      "issueDate": "2024-03-30",
+      "expiryDate": "2026-03-30",
+      "isVerified": true,
+      "student_id": 1
+    },
+    "metadata": {
+      "certificate_type": 2,
+      "issuer": "British Council",
+      "description": "Chứng chỉ IELTS Academic với điểm số tổng thể 7.0",
+      "image_path": "/certificates/ielts/2024/001.jpg",
+      "certificate_info": {
+        "provider": "British Council",
+        "field": "English Language Proficiency",
+        "score": "7.0",
+        "level": "C1"
+      }
+    }
+  },
+  "certification": {
+    "certificate": {
+      "code": "CERTIF-2024-001",
+      "title": "Chứng nhận Hoàn thành Khóa học AWS Solutions Architect",
+      "type": 3,
+      "issueDate": "2024-03-30",
+      "expiryDate": "2025-03-30",
+      "isVerified": true,
+      "student_id": 1
+    },
+    "metadata": {
+      "certificate_type": 3,
+      "issuer": "Amazon Web Services",
+      "description": "Chứng nhận hoàn thành khóa học AWS Solutions Architect Associate",
+      "image_path": "/certificates/aws/2024/001.jpg",
+      "certification_info": {
+        "event": "AWS Solutions Architect Associate Training",
+        "achievement": "Hoàn thành xuất sắc",
+        "duration": "40 giờ",
+        "organizer": "AWS Training and Certification"
+      }
+    }
+  }
+}

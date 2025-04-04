@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
-  resources :students
-  get 'up' => 'rails/health#show', as: :rails_health_check
+  get '/health' => 'health#check'
   namespace :api do
     namespace :v1 do
       devise_for :admin_users, path: '', path_names: {
@@ -20,6 +19,10 @@ Rails.application.routes.draw do
         member do
           get :metadata, to: 'students#show_metadata'
         end
+      end
+
+      resources :certificates do
+        resource :metadata, only: %i[show create update destroy], controller: 'certificate_metadata'
       end
     end
   end
