@@ -9,7 +9,7 @@ module JwtAuthenticatable
 
   def authenticate_user!
     header = request.headers['Authorization']
-    header = header.split(' ').last if header
+    header = header.split.last if header
     begin
       @decoded = JWT.decode(header, Rails.application.credentials.devise_jwt_secret_key!).first
       @current_user = AdminUser.find(@decoded['sub'])
