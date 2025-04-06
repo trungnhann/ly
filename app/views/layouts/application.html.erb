@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TestApp</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <%= stylesheet_link_tag "application", media: "all", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "active_admin", media: "all" %>
+  # Add this line in the head section
+  <%= stylesheet_link_tag "active_admin_custom", "data-turbo-track": "reload" %>
+  <%= javascript_include_tag 'application' %>
+  <%= javascript_importmap_tags %>
+</head>
+<body>
+  <%= yield %>
+</body>
+</html>

@@ -1,0 +1,158 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* button at index table */
+.view_button {
+    @apply no-underline text-lime-600 border-2 border-lime-500 hover:bg-lime-500 hover:text-white focus:ring-4 focus:ring-blue-300
+    font-medium rounded-lg text-sm px-5 py-2.5
+    dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800
+    transform hover:-translate-y-1 transition duration-300 ease-in-out;
+}
+
+.edit_button {
+    @apply no-underline text-blue-600 bg-white border-2 border-blue-600 hover:bg-blue-600 hover:text-white focus:ring-4 focus:ring-blue-300
+    font-medium rounded-lg text-sm px-5 py-2.5
+    dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800
+    transform hover:-translate-y-1 transition duration-300 ease-in-out;
+}
+
+.delete_button {
+    @apply no-underline text-red-500 border-2 border-red-400 hover:bg-red-400 hover:text-white focus:ring-4 focus:ring-blue-300
+    font-medium rounded-lg text-sm px-5 py-2.5
+    dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800
+    transform hover:-translate-y-1 transition duration-300 ease-in-out;
+}
+
+.view_button:where(.dark,.dark *) {
+    @apply text-lime-600 border-2 border-lime-500 bg-transparent
+}
+
+.view_button:hover:where(.dark,.dark *) {
+    @apply bg-lime-500
+}
+
+.edit_button:where(.dark,.dark *) {
+    @apply text-white bg-blue-700
+}
+
+.edit_button:hover:where(.dark,.dark *) {
+    @apply bg-blue-600
+}
+
+.delete_button:where(.dark,.dark *) {
+    @apply text-red-500 border-2 border-red-400 bg-transparent
+}
+
+.delete_button:hover:where(.dark,.dark *) {
+    @apply bg-red-400
+}
+
+/* filter from button */
+.filters-form-submit {
+    @apply bg-eb6222 hover:bg-eb6222-hover;
+}
+
+.filters-form-submit {
+    @apply bg-eb6222 hover:bg-eb6222-hover;
+}
+
+/* index tbody */
+.index-as-table{
+    max-height: 680px;
+    overflow-y: auto;
+}
+
+.data-table :where(thead>tr>th):where(.dark,.dark *) {
+    background-color: rgba(3, 7, 18, 1);
+}
+
+.data-table:where(.dark,.dark *) thead{
+    position: sticky;
+    z-index: 100;
+    top: 0;
+}
+
+.index-as-table thead{
+    position: sticky;
+    z-index: 100;
+    top: 0;
+}
+
+.index-as-table tbody tr:hover {
+    @apply text-eb6222 bg-gray-200;
+}
+
+.index-as-table tbody tr a {
+    @apply font-bold no-underline;
+}
+
+.index-as-table tbody tr:hover {
+    @apply text-eb6222;
+}
+
+/* styles for action in version table */
+.event_create{
+    @apply text-green-600 font-bold;
+}
+
+.event_update{
+    @apply text-amber-500 font-bold;
+}
+
+.event_destroy{
+    @apply text-rose-700 font-bold;
+}
+
+/* recommendation_form */
+.table_recommendation{
+    @apply table-auto border-collapse border border-slate-400;
+}
+
+.recommendation_submit {
+    @apply bg-eb6222 hover:bg-eb6222-hover text-white
+    px-4 py-2 rounded-md shadow
+    transition transform hover:-translate-y-0.5
+    duration-150 ease-in-out;
+}
+
+ /* for sidebar */
+li.group a{
+    @apply font-bold;
+}
+
+li.group button{
+    @apply font-bold;
+}
+
+li.group svg {
+    margin-left: auto;
+}
+
+li.group[data-open] svg {
+    margin-left: auto;
+}
+
+li.group > ul {
+    margin-left: 15px !important;
+}
+
+li.group > ul > li > a {
+    @apply font-normal;
+}
+
+li.group > ul > li > a.selected{
+    @apply text-eb6222;
+}
+
+/*loader*/
+/* HTML: <div class="loader"></div> */
+.loader {
+    width: 100px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 8px solid lightblue;
+    border-right-color: orange;
+    animation: l2 1s infinite linear;
+}
+@keyframes l2 {to{transform: rotate(1turn)}}

@@ -1,4 +1,5 @@
 class AdminUser < ApplicationRecord
+  include Ransackable
   include Devise::JWT::RevocationStrategies::JTIMatcher
 
   # Include default devise modules. Others available are:

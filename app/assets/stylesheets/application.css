@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.fa-solid.fa-eye-slash {
+    right: 11px;
+}
