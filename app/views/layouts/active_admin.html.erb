@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="<%= I18n.locale %>">
+<head>
+  <title><%= html_head_site_title %></title>
+  <%= render "active_admin/html_head" %>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <%= javascript_include_tag 'application' %>
+</head>
+<body data-controller="resource-actions" class="bg-white dark:bg-gray-950/95 text-gray-950 dark:text-gray-100 antialiased">
+<%= render "active_admin/site_header", title: site_title %>
+<div class="xl:ms-60">
+  <%= render "active_admin/main_navigation" %>
+  <%= render "active_admin/page_header", title: @page_title || page_title %>
+  <%= render "active_admin/flash_messages" %>
+  <div data-test-page-content class="px-2.5 lg:px-5 grid grid-cols-1 gap-4 lg:gap-6 lg:grid-flow-col lg:auto-cols-[minmax(0,250px)]">
+    <%= yield %>
+    <%= render "active_admin/sidebar" %>
+  </div>
+  <%= render "active_admin/site_footer" %>
+</div>
+</body>
+</html>

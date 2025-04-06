@@ -1,0 +1,105 @@
+.progress-bar {
+  width: 100%;
+  height: 20px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 5px;
+}
+
+.progress-value {
+  height: 100%;
+  background-color: #5cb85c;
+  transition: width 0.5s ease-in-out;
+}
+
+.progress-text {
+  display: inline-block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.status_tag {
+  &.pending { background: #f0ad4e; }
+  &.processing { background: #5bc0de; }
+  &.completed { background: #5cb85c; }
+  &.failed { background: #d9534f; }
+}
+
+
+.action-items .action_item a,
+.action-items .action_item button {
+  background-color: #5E6469;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin-left: 5px;
+  transition: background-color 0.3s;
+}
+
+.action-items .action_item a:hover,
+.action-items .action_item button:hover {
+  background-color: #3c3f42;
+  text-decoration: none;
+}
+
+.action_item.edit a {
+  background-color: #4CAF50;
+}
+
+.action_item.edit a:hover {
+  background-color: #3e8e41;
+}
+
+.action_item.destroy button,
+.action_item.destroy a {
+  background-color: #f44336;
+}
+
+.action_item.destroy button:hover,
+.action_item.destroy a:hover {
+  background-color: #d32f2f;
+}
+
+.edit-button, .delete-button {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+  margin-left: 5px;
+  cursor: pointer;
+  border: none;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.edit-button {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #3e8e41;
+  text-decoration: none;
+  color: white;
+}
+
+.delete-button {
+  background-color: #f44336;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #d32f2f;
+  text-decoration: none;
+  color: white;
+}

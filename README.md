@@ -133,6 +133,3 @@ POST /api/v1/certificates/:certificate_id/metadata
 PUT /api/v1/certificates/:certificate_id/metadata
 DELETE /api/v1/certificates/:certificate_id/metadata
 ```
-
-## License 📄
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

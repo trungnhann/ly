@@ -16,9 +16,17 @@ gem 'puma', '>= 5.0'
 gem 'tzinfo-data', platforms: %i[windows jruby]
 
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
+gem 'activeadmin', '4.0.0.beta15'
+gem 'sassc-rails'
 gem 'solid_cable'
 gem 'solid_cache'
 gem 'solid_queue'
+
+# Plus integrations with:
+gem 'cancancan'
+gem 'draper'
+gem 'importmap-rails', '~> 2.1'
+gem 'pundit'
 
 gem 'bootsnap', require: false
 
@@ -34,6 +42,7 @@ gem 'jsonapi-serializer'
 
 gem 'aws-sdk-s3'
 gem 'pagy'
+gem 'ransack'
 
 gem 'mongoid', '~> 9.0'
 gem 'mongoid-paperclip', require: 'mongoid_paperclip'

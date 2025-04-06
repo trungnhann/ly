@@ -1,4 +1,5 @@
 class Certificate < ApplicationRecord
+  include Ransackable
   belongs_to :student
 
   validates :code, presence: true, uniqueness: true

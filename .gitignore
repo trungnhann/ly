@@ -33,3 +33,10 @@
 
 .ide
 .idea
+
+/app/assets/builds/*
+!/app/assets/builds/.keep
+/public/assets
+
+/node_modules
+.DS_Store
