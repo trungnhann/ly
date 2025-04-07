@@ -1,18 +1,17 @@
 class Student < ApplicationRecord
   include Ransackable
+
   METADATA_FIELDS = {
     metadata_phone: :phone,
     metadata_major: :major,
-    metadata_specialization: :specialization,
-    metadata_avatar: :avatar_path,
-    metadata_id_card_front: :id_card_front_path,
-    metadata_id_card_back: :id_card_back_path
+    metadata_specialization: :specialization
   }.freeze
+
+  has_one_attached :avatar
 
   has_many :certificates, dependent: :destroy
 
-  attr_accessor :metadata_phone, :metadata_major, :metadata_specialization,
-                :metadata_avatar, :metadata_id_card_front, :metadata_id_card_back
+  attr_accessor :metadata_phone, :metadata_major, :metadata_specialization
 
   validates :code, presence: true, uniqueness: true
   validates :full_name, presence: true
@@ -38,10 +37,7 @@ class Student < ApplicationRecord
     meta_params = {
       phone: params['metadata_phone'],
       major: params['metadata_major'],
-      specialization: params['metadata_specialization'],
-      avatar: params['metadata_avatar'],
-      id_card_front: params['metadata_id_card_front'],
-      id_card_back: params['metadata_id_card_back']
+      specialization: params['metadata_specialization']
     }.compact
 
     existing_metadata = metadata
