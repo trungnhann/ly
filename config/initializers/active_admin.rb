@@ -1,9 +1,5 @@
 ActiveAdmin.setup do |config|
   # == Site Title
-  #
-  # Set the title that is displayed on the main layout
-  # for each of the active admin pages.
-  #
   config.site_title = 'Certificate Manager'
   config.default_per_page = 20
 
@@ -232,7 +228,6 @@ ActiveAdmin.setup do |config|
   #   config.register_stylesheet 'my_print_stylesheet.css', media: :print
   #
   # To load a javascript file:
-  #   config.register_javascript 'my_javascript.js'
 
   # == CSV options
   #
@@ -356,11 +351,4 @@ ActiveAdmin.setup do |config|
 
   # Configure the current user method to be used by Active Admin
   config.current_user_method = :current_admin_user
-  # Add this line to include your custom CSS
-  # Remove the line causing the error
-  # Find and remove or comment out this line (around line 362)
-  # config.register_stylesheet 'active_admin_custom.css'
-
-  # Instead, use register_stylesheet which is the correct method
-  # config.register_stylesheet 'active_admin_custom.css'
 end

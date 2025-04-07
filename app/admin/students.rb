@@ -1,7 +1,8 @@
 ActiveAdmin.register Student do
-  permit_params :code, :full_name, :id_card_number, :email,
-                :metadata_phone, :metadata_major, :metadata_specialization,
-                :metadata_avatar, :metadata_id_card_front, :metadata_id_card_back
+  permit_params :code, :full_name, :id_card_number, :email, :avatar,
+                :metadata_phone, :metadata_major, :metadata_specialization
+  remove_filter :avatar_attachment
+  remove_filter :avatar_blob
 
   form html: { multipart: true } do |f|
     f.inputs 'Student Details' do
@@ -9,15 +10,13 @@ ActiveAdmin.register Student do
       f.input :full_name
       f.input :id_card_number
       f.input :email
+      f.input :avatar, as: :file
     end
 
     f.inputs 'Student Metadata' do
       f.input :metadata_phone, label: 'Phone'
       f.input :metadata_major, label: 'Major'
       f.input :metadata_specialization, label: 'Specialization'
-      f.input :metadata_avatar, as: :file, label: 'Avatar'
-      f.input :metadata_id_card_front, as: :file, label: 'ID Card Front'
-      f.input :metadata_id_card_back, as: :file, label: 'ID Card Back'
     end
 
     f.actions
@@ -32,7 +31,14 @@ ActiveAdmin.register Student do
       row :created_at
       row :updated_at
 
-      # Metadata fields
+      row :avatar do |student|
+        if student.avatar.attached?
+          image_tag url_for(student.avatar), style: 'max-height: 200px;'
+        else
+          status_tag 'No Avatar'
+        end
+      end
+
       row :phone do |student|
         student.metadata&.phone
       end
@@ -42,24 +48,16 @@ ActiveAdmin.register Student do
       row :specialization do |student|
         student.metadata&.specialization
       end
-      row :avatar do |student|
-        image_tag(student.metadata.avatar_url) if student.metadata&.avatar_url.present?
-      end
-      row :id_card_front do |student|
-        image_tag(student.metadata.id_card_front_url) if student.metadata&.id_card_front_url.present?
-      end
-      row :id_card_back do |student|
-        image_tag(student.metadata.id_card_back_url) if student.metadata&.id_card_back_url.present?
-      end
     end
   end
 
   controller do
     def create
       @student = Student.new(permitted_params[:student].except(
-                               :metadata_phone, :metadata_major, :metadata_specialization,
-                               :metadata_avatar, :metadata_id_card_front, :metadata_id_card_back
+                               :metadata_phone, :metadata_major, :metadata_specialization
                              ))
+
+      @student.avatar.attach(permitted_params[:student][:avatar]) if permitted_params[:student][:avatar].present?
 
       if @student.save
         @student.create_or_update_metadata(permitted_params[:student])
@@ -70,11 +68,17 @@ ActiveAdmin.register Student do
     end
 
     def update
-      if resource.update(permitted_params[:student].except(
-                           :metadata_phone, :metadata_major, :metadata_specialization,
-                           :metadata_avatar, :metadata_id_card_front, :metadata_id_card_back
+      student_params = permitted_params[:student]
+
+      if resource.update(student_params.except(
+                           :metadata_phone, :metadata_major, :metadata_specialization
                          ))
-        resource.create_or_update_metadata(permitted_params[:student])
+        if student_params[:avatar].present?
+          resource.avatar.purge if resource.avatar.attached?
+          resource.avatar.attach(student_params[:avatar])
+        end
+
+        resource.create_or_update_metadata(student_params)
         redirect_to admin_student_path(resource), notice: 'Student was successfully updated.'
       else
         render :edit
@@ -84,13 +88,11 @@ ActiveAdmin.register Student do
     def destroy
       @student = Student.find(params[:id])
       ActiveRecord::Base.transaction do
-        # Force deletion of metadata first
         if @student.metadata.present?
           Rails.logger.info "Manually deleting metadata for student #{@student.id}"
           @student.metadata.delete
         end
 
-        # Then delete the student
         raise ActiveRecord::Rollback unless @student.destroy
 
         redirect_to admin_students_path, notice: 'Student was successfully deleted.'
@@ -104,7 +106,6 @@ ActiveAdmin.register Student do
     end
   end
 
-  # Make sure we're using the correct HTTP method for delete
   config.clear_action_items!
 
   action_item :edit, only: :show do
