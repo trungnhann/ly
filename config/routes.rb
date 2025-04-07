@@ -8,8 +8,7 @@ Rails.application.routes.draw do
                                            registration: 'signup'
                                          },
                                controllers: {
-                                 sessions: 'api/v1/auth/sessions',
-                                 registrations: 'api/v1/auth/registrations'
+                                 sessions: 'api/v1/auth/sessions'
                                }
       resources :students do
         resource :metadata, only: %i[show create update destroy], controller: 'student_metadata'

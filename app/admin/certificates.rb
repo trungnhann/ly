@@ -85,7 +85,9 @@ ActiveAdmin.register Certificate do
       f.input :title
       f.input :certificate_type, as: :select, collection: Certificate.certificate_types.keys,
                                  input_html: { id: 'certificate_type_select' }
-      f.input :issue_date
+      f.input :issue_date, as: :date_select,
+                           start_year: 1980,
+                           end_year: Date.today.year
       f.input :expiry_date
       f.input :is_verified
       f.input :student
@@ -191,7 +193,7 @@ ActiveAdmin.register Certificate do
         }.compact
       end
 
-      if certificate.metadata_id.present? && certificate.metadata
+      if certificate.metadata
         certificate.metadata.update(metadata_params)
       else
         meta = CertificateMetadata.create(metadata_params.merge(
