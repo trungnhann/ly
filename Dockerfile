@@ -43,8 +43,7 @@ RUN npm install && \
     npm run build:css
 
 # Precompile bootsnap & Rails app
-RUN bundle exec bootsnap precompile app/ lib/ && \
-    bundle exec rails assets:precompile
+RUN bundle exec bootsnap precompile app/ lib/
 
 # ---------------------------------------
 # FINAL STAGE
