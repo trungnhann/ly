@@ -1,8 +1,9 @@
 module Api
   module V1
     class BaseController < ApplicationController
-      # include JwtAuthenticatable
-      # before_action :authenticate_user!
+      skip_before_action :verify_authenticity_token, if: -> { request.format.json? }
+      include JwtAuthenticatable
+      before_action :authenticate_user!
 
       DEFAULT_PAGE = 1
       PER_PAGE = 10

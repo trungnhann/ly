@@ -1,30 +1,27 @@
 Rails.application.routes.draw do
   get '/health' => 'health#check'
-  namespace :api do
+  # ── JSON API ──
+  namespace :api, defaults: { format: :json } do
     namespace :v1 do
-      devise_for :admin_users, path: '', path_names: {
-                                           sign_in: 'login',
-                                           sign_out: 'logout',
-                                           registration: 'signup'
-                                         },
-                               controllers: {
-                                 sessions: 'api/v1/auth/sessions'
-                               }
+      devise_for :admin_users,
+                 path: 'auth',
+                 controllers: { sessions: 'api/v1/auth/sessions' },
+                 path_names: { sign_in: 'sign_in', sign_out: 'sign_out' },
+                 skip: %i[registrations passwords confirmations]
+
       resources :students do
-        resource :metadata, only: %i[show create update destroy], controller: 'student_metadata'
-        collection do
-          post :scan_id_card
-        end
-        member do
-          get :metadata, to: 'students#show_metadata'
-        end
+        resource :metadata, controller: 'student_metadata'
+        collection { post :scan_id_card }
+        member     { get  :metadata, to: 'students#show_metadata' }
       end
 
       resources :certificates do
-        resource :metadata, only: %i[show create update destroy], controller: 'certificate_metadata'
+        resource :metadata, controller: 'certificate_metadata'
       end
     end
   end
+
+  # ── ActiveAdmin (web) ──
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
 end

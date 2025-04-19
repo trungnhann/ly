@@ -85,9 +85,7 @@ ActiveAdmin.register Certificate do
       f.input :title
       f.input :certificate_type, as: :select, collection: Certificate.certificate_types.keys,
                                  input_html: { id: 'certificate_type_select' }
-      f.input :issue_date, as: :date_select,
-                           start_year: 1980,
-                           end_year: Time.zone.today
+      f.input :issue_date
       f.input :expiry_date
       f.input :is_verified
       f.input :student

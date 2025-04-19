@@ -22,3 +22,8 @@ document.addEventListener("DOMContentLoaded", function () {
         button.innerHTML = '<i class="fa-solid fa-trash"></i>';
     });
 });
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".edit_button").forEach(function (button) {
+        button.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
+    });
+});

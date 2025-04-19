@@ -20,9 +20,9 @@ class Student < ApplicationRecord
 
   before_destroy :destroy_metadata
 
-  scope :filter_by_code, ->(code) { where('code ILIKE ?', "%#{code}%") }
+  scope :filter_by_code, ->(code) { where('code ILIKE ?', code) }
   scope :filter_by_full_name, ->(name) { where('full_name ILIKE ?', "%#{name}%") }
-  scope :filter_by_id_card_number, ->(number) { where('id_card_number ILIKE ?', "%#{number}%") }
+  scope :filter_by_id_card_number, ->(number) { where('id_card_number ILIKE ?', number) }
   scope :filter_by_email, ->(email) { where('email ILIKE ?', "%#{email}%") }
   scope :filter_by_created_at, lambda { |date_range|
     start_date, end_date = date_range.split(',').map(&:strip)

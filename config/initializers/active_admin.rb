@@ -347,7 +347,7 @@ ActiveAdmin.setup do |config|
   # config.use_webpacker = true
   #
   # Configure the authentication method to be used by Active Admin
-  config.authentication_method = :authenticate_admin_user!
+  config.authentication_method = :authenticate_user!
 
   # Configure the current user method to be used by Active Admin
   config.current_user_method = :current_admin_user

@@ -2,6 +2,9 @@ class ApplicationController < ActionController::Base
   include ActionController::Helpers
   include Devise::Controllers::Helpers
   devise_group :user, contains: [:admin_user]
+  # def authenticate_admin_user!
+  #   authenticate_user!
+  # end
   # Tạm thời bỏ authentication để kiểm tra giao diện
   # before_action :authenticate_admin_user!
 

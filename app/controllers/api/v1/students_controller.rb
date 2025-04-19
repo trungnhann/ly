@@ -3,9 +3,10 @@ module Api
     class StudentsController < BaseController
       before_action :set_student, only: %i[show update destroy show_metadata]
 
-      # GET /students
       def index
         @students = Student.all
+        @students = @students.filter_by_code(params[:code]) if params[:code].present?
+        @students = @students.filter_by_id_card_number(params[:id_card_number]) if params[:id_card_number].present?
         json_response(@students, StudentSerializer)
       end
 
@@ -40,7 +41,7 @@ module Api
 
         if student
           Rails.logger.info "Found existing student: #{student.id}"
-          update_student_metadata(student, id_card_data)
+          # update_student_metadata(student)
           json_response(student, StudentSerializer)
         else
           Rails.logger.info "No student found with ID card number: #{id_card_data[:id_card][:number]}"
@@ -111,7 +112,7 @@ module Api
 
         begin
           metadata = @student.metadata || StudentMetadata.new(student_id: @student.id.to_s)
-          metadata.id_card = metadata_params[:id_card]
+
           metadata.phone = metadata_params[:phone]
           metadata.major = metadata_params[:major]
           metadata.specialization = metadata_params[:specialization]
@@ -128,21 +129,8 @@ module Api
         end
       end
 
-      def update_student_metadata(student, id_card_data)
+      def update_student_metadata(student)
         metadata = student.metadata || StudentMetadata.new(student_id: student.id.to_s)
-        current_id_card = metadata.id_card || {}
-
-        new_id_card = {
-          address: id_card_data[:id_card][:address],
-          issue_date: id_card_data[:id_card][:issue_date],
-          issue_place: id_card_data[:id_card][:issue_place],
-          expiry_date: id_card_data[:id_card][:expiry_date]
-        }
-
-        # Chỉ update khi có thay đổi
-        return unless current_id_card != new_id_card
-
-        metadata.id_card = new_id_card
         metadata.save!
       end
     end
