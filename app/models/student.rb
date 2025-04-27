@@ -57,16 +57,13 @@ class Student < ApplicationRecord
   end
 
   def destroy_metadata
-    # Find all metadata records for this student
     metadata_records = StudentMetadata.where(student_id: id.to_s)
 
-    # Delete each record
     metadata_records.each do |record|
       Rails.logger.info "Attempting to delete metadata record: #{record.id}"
       record.delete
     end
 
-    # Clear memoized metadata
     @metadata = nil
 
     Rails.logger.info "Successfully deleted metadata for student #{id}"

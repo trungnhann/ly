@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_07_042012) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_27_103052) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -48,8 +48,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_07_042012) do
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer "user_type", default: 1
-    t.integer "integer", default: 1
+    t.string "user_type", default: "1"
     t.string "jti"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -62,7 +61,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_07_042012) do
   create_table "certificates", force: :cascade do |t|
     t.string "code", null: false
     t.string "title", null: false
-    t.integer "certificate_type", null: false
+    t.string "certificate_type", null: false
     t.date "issue_date", null: false
     t.date "expiry_date"
     t.boolean "is_verified", default: true

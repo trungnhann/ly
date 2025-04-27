@@ -21,6 +21,8 @@ gem 'sassc-rails'
 gem 'solid_cable'
 gem 'solid_cache'
 gem 'solid_queue'
+gem 'grpc'
+gem 'grpc-tools'
 
 # Plus integrations with:
 gem 'cancancan'

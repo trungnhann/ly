@@ -1,4 +1,3 @@
-# app/models/admin_user.rb
 class AdminUser < ApplicationRecord
   include Ransackable
   include Devise::JWT::RevocationStrategies::JTIMatcher
@@ -8,9 +7,9 @@ class AdminUser < ApplicationRecord
          :jwt_authenticatable, jwt_revocation_strategy: self
 
   enum :user_type, {
-    superadmin: 0,
-    admin: 1,
-    accountant: 2
+    superadmin: 'superadmin',
+    admin: 'admin',
+    accountant: 'accountant'
   }, prefix: true
 
   validates :user_type, presence: true

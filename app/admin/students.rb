@@ -105,17 +105,4 @@ ActiveAdmin.register Student do
       redirect_to admin_student_path(@student), alert: "Error: #{e.message}"
     end
   end
-
-  config.clear_action_items!
-
-  action_item :edit, only: :show do
-    link_to 'Edit Student', edit_admin_student_path(resource), class: 'edit_button'
-  end
-
-  action_item :destroy, only: :show do
-    button_to 'Delete Student', admin_student_path(resource),
-              method: :delete,
-              form: { data: { confirm: 'Are you sure you want to delete this student?' } },
-              class: 'delete_button'
-  end
 end
