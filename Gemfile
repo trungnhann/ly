@@ -58,6 +58,7 @@ gem 'mongoid-slug'
 gem 'httparty'
 
 group :development, :test do
+  gem 'annotate', github: 'andynu/annotate_models', branch: 'rails-8-0'
   gem 'debug', platforms: %i[mri windows], require: 'debug/prelude'
 
   gem 'brakeman', require: false

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_27_103052) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_29_153858) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -58,6 +58,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_27_103052) do
     t.index ["user_type"], name: "index_admin_users_on_user_type"
   end
 
+  create_table "audit_logs", force: :cascade do |t|
+    t.string "record_type", null: false
+    t.integer "record_id", null: false
+    t.string "action", null: false
+    t.jsonb "audited_changes", null: false
+    t.bigint "admin_user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["admin_user_id"], name: "index_audit_logs_on_admin_user_id"
+    t.index ["record_type", "record_id"], name: "index_audit_logs_on_record_type_and_record_id"
+  end
+
   create_table "certificates", force: :cascade do |t|
     t.string "code", null: false
     t.string "title", null: false
@@ -87,5 +99,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_27_103052) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "audit_logs", "admin_users"
   add_foreign_key "certificates", "students"
 end

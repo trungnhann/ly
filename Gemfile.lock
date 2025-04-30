@@ -1,3 +1,12 @@
+GIT
+  remote: https://github.com/andynu/annotate_models.git
+  revision: 2c72ee8995ae8c1b9f5cf8690e8e3d22b7bd080d
+  branch: rails-8-0
+  specs:
+    annotate (3.2.0)
+      activerecord (>= 3.2, < 9.0)
+      rake (>= 10.4, < 14.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -478,6 +487,7 @@ PLATFORMS
 
 DEPENDENCIES
   activeadmin (= 4.0.0.beta15)
+  annotate!
   aws-sdk-s3
   bootsnap
   brakeman
