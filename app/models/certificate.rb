@@ -1,5 +1,31 @@
+# == Schema Information
+#
+# Table name: certificates
+#
+#  id               :bigint           not null, primary key
+#  certificate_type :string           not null
+#  code             :string           not null, indexed
+#  expiry_date      :date
+#  is_verified      :boolean          default(TRUE)
+#  issue_date       :date             not null
+#  title            :string           not null
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  metadata_id      :string
+#  student_id       :bigint           not null, indexed
+#
+# Indexes
+#
+#  index_certificates_on_code        (code) UNIQUE
+#  index_certificates_on_student_id  (student_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (student_id => students.id)
+#
 class Certificate < ApplicationRecord
   include Ransackable
+  # include Auditable
 
   belongs_to :student
 
@@ -29,6 +55,9 @@ class Certificate < ApplicationRecord
 
   after_create :ensure_metadata_created
   after_create :process_pending_metadata
+
+  after_update :sync_certificate_type_to_metadata, if: :saved_change_to_certificate_type?
+
   before_destroy :cleanup_metadata
 
   scope :filter_by_code, ->(code) { where('code ILIKE ?', code) }
@@ -77,5 +106,14 @@ class Certificate < ApplicationRecord
 
   def cleanup_metadata
     CertificateMetadata.where(certificate_id: id.to_s).destroy_all if metadata_id.present?
+  end
+
+  def sync_certificate_type_to_metadata
+    return if metadata_id.blank?
+
+    meta = CertificateMetadata.find_by(id: metadata_id)
+    return if meta.blank?
+
+    meta.update(certificate_type: certificate_type)
   end
 end

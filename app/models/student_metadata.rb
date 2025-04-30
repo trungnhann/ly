@@ -1,6 +1,7 @@
 class StudentMetadata
   include Mongoid::Document
   include Mongoid::Timestamps
+  # include Auditable
 
   field :student_id, type: String
   field :phone, type: String

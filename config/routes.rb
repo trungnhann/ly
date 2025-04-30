@@ -8,6 +8,14 @@ Rails.application.routes.draw do
                  controllers: { sessions: 'api/v1/auth/sessions' },
                  path_names: { sign_in: 'sign_in', sign_out: 'sign_out' },
                  skip: %i[registrations passwords confirmations]
+      devise_scope :admin_user do
+        post 'auth/sign_up', to: 'auth/sessions#register'
+        delete 'auth/sign_out', to: 'auth/sessions#destroy'
+      end
+
+      namespace :auth do
+        get 'verify_token', to: 'validations#verify_token'
+      end
 
       resources :students do
         resource :metadata, controller: 'student_metadata'
