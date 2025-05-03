@@ -422,6 +422,7 @@ GEM
       sprockets-rails
       tilt
     securerandom (0.4.1)
+    select2-rails (4.0.13)
     solid_cable (3.0.7)
       actioncable (>= 7.2)
       activejob (>= 7.2)
@@ -515,6 +516,7 @@ DEPENDENCIES
   ransack
   rubocop-rails-omakase
   sassc-rails
+  select2-rails
   solid_cable
   solid_cache
   solid_queue

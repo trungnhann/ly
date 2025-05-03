@@ -6,7 +6,6 @@ require 'face_recognition_pb'
 
 module FaceRecognition
   class Service
-
     include ::GRPC::GenericService
 
     self.marshal_class_method = :encode

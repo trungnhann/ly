@@ -17,11 +17,9 @@ module Api
       rescue_from JWT::DecodeError, with: :handle_jwt_error
       rescue_from JWT::ExpiredSignature, with: :handle_token_expired
 
-      # Phương thức tiện ích xử lý phân trang, filter và serializer cho cả collection và single resource
       def json_response(resource, serializer_class, options = {})
         serializer_options = {}
 
-        # Xử lý include
         if params[:include].present?
           includes = params[:include].split(',').map(&:strip)
           serializer_options[:include] = includes
@@ -29,10 +27,8 @@ module Api
           serializer_options[:include] = options[:include]
         end
 
-        # Merger các options khác
         serializer_options.merge!(options.except(:per_page, :include))
 
-        # Nếu resource là một collection, áp dụng phân trang và filter
         if resource.respond_to?(:to_a) && !resource.is_a?(ApplicationRecord)
           # Xử lý filter
           filtered_collection = apply_filters(resource)
@@ -112,7 +108,6 @@ module Api
         render json: response, status: status, content_type: 'application/json'
       end
 
-      # Phương thức phân trang
       def paginate(collection, page: DEFAULT_PAGE, per_page: PER_PAGE)
         count = collection.count
         pages = (count.to_f / per_page).ceil

@@ -25,9 +25,11 @@
 #
 class Certificate < ApplicationRecord
   include Ransackable
-  # include Auditable
+  include Auditable
 
   belongs_to :student
+
+  has_one_attached :file
 
   enum :certificate_type, {
     degree: 'degree',
@@ -41,7 +43,7 @@ class Certificate < ApplicationRecord
     CERTIFICATION: 'certification'
   }.freeze
 
-  attr_accessor :metadata_issuer, :metadata_description, :metadata_image_path, :metadata_degree_level,
+  attr_accessor :metadata_issuer, :metadata_description, :metadata_degree_level,
                 :metadata_degree_major, :metadata_degree_specialization, :metadata_degree_grade,
                 :metadata_degree_graduation_year, :metadata_certificate_provider,
                 :metadata_certificate_field, :metadata_certificate_score, :metadata_certificate_level,
@@ -52,6 +54,7 @@ class Certificate < ApplicationRecord
   validates :title, presence: true
   validates :certificate_type, presence: true, inclusion: { in: Certificate.certificate_types.keys }
   validates :issue_date, presence: true
+  validates :file, presence: { message: 'là bắt buộc, vui lòng tải lên file PDF' }
 
   after_create :ensure_metadata_created
   after_create :process_pending_metadata

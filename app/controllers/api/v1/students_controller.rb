@@ -41,8 +41,7 @@ module Api
 
         if student
           Rails.logger.info "Found existing student: #{student.id}"
-          # update_student_metadata(student)
-          json_response(student, StudentSerializer)
+          json_response(student, StudentSerializer, include: [:certificates])
         else
           Rails.logger.info "No student found with ID card number: #{id_card_data[:id_card][:number]}"
           raise ActiveRecord::RecordNotFound,

@@ -54,11 +54,11 @@ module Api
         protected
 
         def sign_in_params
-          params.require(:user).permit(:email, :password)
+          params.expect(user: %i[email password])
         end
 
         def sign_up_params
-          params.require(:user).permit(:email, :password, :password_confirmation, :user_type)
+          params.expect(user: %i[email password password_confirmation user_type])
         end
 
         private

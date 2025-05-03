@@ -87,22 +87,37 @@ ActiveAdmin.register Student do
 
     def destroy
       @student = Student.find(params[:id])
-      ActiveRecord::Base.transaction do
+
+      begin
+        puts "🔥 Bắt đầu xoá student ID: #{@student.id}"
+
         if @student.metadata.present?
-          Rails.logger.info "Manually deleting metadata for student #{@student.id}"
+          puts "🧹 Đang xoá metadata ID: #{@student.metadata.id}"
           @student.metadata.delete
+        else
+          puts '⚠️ Không tìm thấy metadata để xoá'
         end
 
-        raise ActiveRecord::Rollback unless @student.destroy
+        # Nếu student có certificates, xoá cả metadata của chúng
+        if @student.certificates.any?
+          puts "🗂 Đang xoá #{@student.certificates.count} certificate kèm metadata..."
+          @student.certificates.each do |cert|
+            puts " - Xoá certificate ##{cert.id} + metadata..."
+            cert.metadata&.delete
+            cert.destroy!
+          end
+        end
+
+        # Xoá student
+        @student.destroy!
+        puts "✅ Student #{@student.id} đã được xoá thành công"
 
         redirect_to admin_students_path, notice: 'Student was successfully deleted.'
-        return
+      rescue StandardError => e
+        puts "❌ Xoá thất bại: #{e.message}"
+        Rails.logger.error "Student deletion failed: #{e.message}"
+        redirect_to admin_student_path(@student), alert: "Cannot delete student: #{e.message}"
       end
-
-      redirect_to admin_student_path(@student), alert: 'Failed to delete student.'
-    rescue StandardError => e
-      Rails.logger.error "Student deletion error: #{e.message}"
-      redirect_to admin_student_path(@student), alert: "Error: #{e.message}"
     end
   end
 end

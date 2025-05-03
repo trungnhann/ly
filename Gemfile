@@ -17,12 +17,12 @@ gem 'tzinfo-data', platforms: %i[windows jruby]
 
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
 gem 'activeadmin', '4.0.0.beta15'
+gem 'grpc'
+gem 'grpc-tools'
 gem 'sassc-rails'
 gem 'solid_cable'
 gem 'solid_cache'
 gem 'solid_queue'
-gem 'grpc'
-gem 'grpc-tools'
 
 # Plus integrations with:
 gem 'cancancan'
@@ -48,6 +48,7 @@ gem 'ransack'
 
 gem 'mongoid', '~> 9.0'
 gem 'mongoid-paperclip', require: 'mongoid_paperclip'
+gem 'select2-rails'
 gem 'mongoid-slug'
 # gem "mongoid-history" # Tạm thời tắt
 # gem "mongoid-audit" # Tạm thời tắt

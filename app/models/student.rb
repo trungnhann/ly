@@ -37,7 +37,7 @@ class Student < ApplicationRecord
   validates :id_card_number, presence: true, uniqueness: true
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
 
-  before_destroy :destroy_metadata
+  before_destroy :cleanup_metadata
 
   scope :filter_by_code, ->(code) { where('code ILIKE ?', code) }
   scope :filter_by_full_name, ->(name) { where('full_name ILIKE ?', "%#{name}%") }
@@ -75,20 +75,15 @@ class Student < ApplicationRecord
     end
   end
 
-  def destroy_metadata
-    metadata_records = StudentMetadata.where(student_id: id.to_s)
-
-    metadata_records.each do |record|
-      Rails.logger.info "Attempting to delete metadata record: #{record.id}"
-      record.delete
+  def cleanup_metadata
+    if metadata.present?
+      Rails.logger.info "Deleting metadata for student #{id} - metadata ID: #{metadata.id}"
+      metadata.delete
+    else
+      Rails.logger.warn "No metadata found for student #{id} to delete"
     end
-
-    @metadata = nil
-
-    Rails.logger.info "Successfully deleted metadata for student #{id}"
   rescue StandardError => e
-    Rails.logger.error "Error deleting metadata for student #{id}: #{e.message}"
-    Rails.logger.error e.backtrace.join("\n")
+    Rails.logger.error "Failed to delete metadata for student #{id}: #{e.message}"
     raise e
   end
 end

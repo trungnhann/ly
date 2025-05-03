@@ -10,21 +10,20 @@ class CertificateMetadata
 
   field :issuer, type: String
   field :description, type: String
-  field :image_path, type: String
 
   field :degree_info, type: Hash, default: {
-    level: nil,           # Cấp bậc (Đại học, Thạc sĩ, Tiến sĩ)
-    major: nil,           # Ngành học
-    specialization: nil,  # Chuyên ngành
-    grade: nil, # Xếp loại
-    graduation_year: nil # Năm tốt nghiệp
+    level: nil,
+    major: nil,
+    specialization: nil,
+    grade: nil,
+    graduation_year: nil
   }
 
   field :certificate_info, type: Hash, default: {
-    provider: nil,       # Đơn vị cấp chứng chỉ
-    field: nil,          # Lĩnh vực
-    score: nil,          # Điểm số/Kết quả
-    level: nil           # Cấp độ/Trình độ
+    provider: nil,
+    field: nil,
+    score: nil,
+    level: nil
   }
 
   field :certification_info, type: Hash, default: {

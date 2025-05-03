@@ -1,8 +1,8 @@
 ActiveAdmin.register Certificate do
   actions :all
 
-  permit_params :code, :title, :certificate_type, :issue_date, :expiry_date, :is_verified, :student_id,
-                :metadata_issuer, :metadata_description, :metadata_image_path,
+  permit_params :code, :title, :certificate_type, :issue_date, :expiry_date, :is_verified, :student_id, :file,
+                :metadata_issuer, :metadata_description,
                 :metadata_degree_level, :metadata_degree_major, :metadata_degree_specialization,
                 :metadata_degree_grade, :metadata_degree_graduation_year,
                 :metadata_certificate_provider, :metadata_certificate_field,
@@ -30,7 +30,7 @@ ActiveAdmin.register Certificate do
   filter :issue_date
   filter :expiry_date
   filter :is_verified
-  filter :student
+  filter :student, collection: proc { Student.all.map { |s| ["#{s.code} - #{s.full_name}", s.id] } }
   filter :created_at
 
   show do
@@ -45,6 +45,18 @@ ActiveAdmin.register Certificate do
       row :student
       row :created_at
       row :updated_at
+
+      row :file do |certificate|
+        if certificate.file.attached?
+          if certificate.file.content_type == 'application/pdf'
+            link_to certificate.file.filename, url_for(certificate.file), target: '_blank', rel: 'noopener'
+          else
+            status_tag 'File không phải PDF'
+          end
+        else
+          status_tag 'Không có file'
+        end
+      end
     end
 
     panel 'Metadata' do
@@ -52,7 +64,6 @@ ActiveAdmin.register Certificate do
         attributes_table_for resource.metadata do
           row :issuer
           row :description
-          row :image_path
 
           case resource.certificate_type
           when 'degree'
@@ -79,7 +90,7 @@ ActiveAdmin.register Certificate do
     end
   end
 
-  form do |f|
+  form html: { multipart: true } do |f|
     f.inputs 'Certificate Details' do
       f.input :code
       f.input :title
@@ -88,13 +99,19 @@ ActiveAdmin.register Certificate do
       f.input :issue_date
       f.input :expiry_date
       f.input :is_verified
-      f.input :student
+      f.input :student, as: :select, collection: Student.all.map { |s| ["#{s.code} - #{s.full_name}", s.id] },
+                        input_html: {
+                          style: 'width: 400px',
+                          class: 'select2-student',
+                          data: { placeholder: 'Tìm kiếm theo mã số sinh viên hoặc tên' }
+                        }
+      f.input :file, as: :file, hint: 'Chỉ chấp nhận file PDF (bắt buộc)', label: 'File PDF',
+                     required: !f.object.file.attached?
     end
 
     f.inputs 'Common Metadata', id: 'common_metadata' do
       f.input :metadata_issuer
       f.input :metadata_description
-      f.input :metadata_image_path
     end
 
     f.inputs 'Degree Metadata', id: 'degree_metadata' do
@@ -123,47 +140,108 @@ ActiveAdmin.register Certificate do
   end
 
   controller do
+    before_action :assign_form_metadata_from_model, only: [:edit]
+
     def create
       metadata_fields = permitted_metadata_fields
       @certificate = Certificate.new(permitted_params[:certificate].except(*metadata_fields))
 
+      if params[:certificate][:file].blank?
+        @certificate.errors.add(:file, 'là bắt buộc, vui lòng tải lên file PDF')
+        assign_form_metadata_from_params
+        render :new and return
+      end
+
+      if params[:certificate][:file].present?
+        file = params[:certificate][:file]
+        unless file.content_type == 'application/pdf'
+          @certificate.errors.add(:file, 'phải là file PDF')
+          assign_form_metadata_from_params
+          render :new and return
+        end
+      end
+
       if @certificate.save
-        create_or_update_metadata(@certificate, permitted_params[:certificate])
+        assign_metadata(@certificate, permitted_params[:certificate])
         redirect_to admin_certificate_path(@certificate), notice: 'Certificate was successfully created.'
       else
+        assign_form_metadata_from_params
         render :new
       end
     end
 
     def update
       metadata_fields = permitted_metadata_fields
+
+      if !resource.file.attached? && params[:certificate][:file].blank?
+        resource.errors.add(:file, 'là bắt buộc, vui lòng tải lên file PDF')
+        assign_form_metadata_from_params
+        render :edit and return
+      end
+
+      if params[:certificate][:file].present?
+        file = params[:certificate][:file]
+        unless file.content_type == 'application/pdf'
+          resource.errors.add(:file, 'phải là file PDF')
+          assign_form_metadata_from_params
+          render :edit and return
+        end
+      end
+
       if resource.update(permitted_params[:certificate].except(*metadata_fields))
-        create_or_update_metadata(resource, permitted_params[:certificate])
+        assign_metadata(resource, permitted_params[:certificate])
         redirect_to admin_certificate_path(resource), notice: 'Certificate was successfully updated.'
       else
+        assign_form_metadata_from_params
         render :edit
       end
     end
 
     private
 
-    def permitted_metadata_fields
-      %i[
-        metadata_issuer metadata_description metadata_image_path
-        metadata_degree_level metadata_degree_major metadata_degree_specialization
-        metadata_degree_grade metadata_degree_graduation_year
-        metadata_certificate_provider metadata_certificate_field
-        metadata_certificate_score metadata_certificate_level
-        metadata_certification_event metadata_certification_achievement
-        metadata_certification_duration metadata_certification_organizer
-      ]
+    def assign_form_metadata_from_params
+      permitted_metadata_fields.each do |field|
+        resource.send("#{field}=", params[:certificate][field])
+      end
     end
 
-    def create_or_update_metadata(certificate, params)
+    def assign_form_metadata_from_model
+      return if resource.metadata.blank?
+
+      resource.metadata_issuer = resource.metadata.issuer
+      resource.metadata_description = resource.metadata.description
+
+      case resource.certificate_type
+      when 'degree'
+        if resource.metadata.degree_info.present?
+          resource.metadata_degree_level = resource.metadata.degree_info['level']
+          resource.metadata_degree_major = resource.metadata.degree_info['major']
+          resource.metadata_degree_specialization = resource.metadata.degree_info['specialization']
+          resource.metadata_degree_grade = resource.metadata.degree_info['grade']
+          resource.metadata_degree_graduation_year = resource.metadata.degree_info['graduation_year']
+        end
+      when 'certificate'
+        if resource.metadata.certificate_info.present?
+          resource.metadata_certificate_provider = resource.metadata.certificate_info['provider']
+          resource.metadata_certificate_field = resource.metadata.certificate_info['field']
+          resource.metadata_certificate_score = resource.metadata.certificate_info['score']
+          resource.metadata_certificate_level = resource.metadata.certificate_info['level']
+        end
+      when 'certification'
+        if resource.metadata.certification_info.present?
+          resource.metadata_certification_event = resource.metadata.certification_info['event']
+          resource.metadata_certification_achievement = resource.metadata.certification_info['achievement']
+          resource.metadata_certification_duration = resource.metadata.certification_info['duration']
+          resource.metadata_certification_organizer = resource.metadata.certification_info['organizer']
+        end
+      end
+    end
+
+    def assign_metadata(certificate, params)
       metadata_params = {
         issuer: params['metadata_issuer'],
         description: params['metadata_description'],
-        image_path: params['metadata_image_path']
+        certificate_type: certificate.certificate_type
       }.compact
 
       case certificate.certificate_type
@@ -175,6 +253,8 @@ ActiveAdmin.register Certificate do
           grade: params['metadata_degree_grade'],
           graduation_year: params['metadata_degree_graduation_year']
         }.compact
+        metadata_params[:certificate_info] = {}
+        metadata_params[:certification_info] = {}
       when 'certificate'
         metadata_params[:certificate_info] = {
           provider: params['metadata_certificate_provider'],
@@ -182,6 +262,8 @@ ActiveAdmin.register Certificate do
           score: params['metadata_certificate_score'],
           level: params['metadata_certificate_level']
         }.compact
+        metadata_params[:degree_info] = {}
+        metadata_params[:certification_info] = {}
       when 'certification'
         metadata_params[:certification_info] = {
           event: params['metadata_certification_event'],
@@ -189,6 +271,8 @@ ActiveAdmin.register Certificate do
           duration: params['metadata_certification_duration'],
           organizer: params['metadata_certification_organizer']
         }.compact
+        metadata_params[:degree_info] = {}
+        metadata_params[:certificate_info] = {}
       end
 
       if certificate.metadata
@@ -200,6 +284,18 @@ ActiveAdmin.register Certificate do
                                           ))
         certificate.update_column(:metadata_id, meta.id.to_s)
       end
+    end
+
+    def permitted_metadata_fields
+      %i[
+        metadata_issuer metadata_description
+        metadata_degree_level metadata_degree_major metadata_degree_specialization
+        metadata_degree_grade metadata_degree_graduation_year
+        metadata_certificate_provider metadata_certificate_field
+        metadata_certificate_score metadata_certificate_level
+        metadata_certification_event metadata_certification_achievement
+        metadata_certification_duration metadata_certification_organizer
+      ]
     end
   end
 end

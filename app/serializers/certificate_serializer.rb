@@ -24,6 +24,17 @@
 #  fk_rails_...  (student_id => students.id)
 #
 class CertificateSerializer < BaseSerializer
-  attributes :id, :code, :title, :certificate_type, :issue_date, :expiry_date, :is_verified, :student_id,
-             :metadata_id, :created_at, :updated_at
+  attributes :code, :title, :certificate_type, :issue_date, :expiry_date,
+             :is_verified, :student_id, :metadata_id, :created_at, :updated_at
+
+  attribute :metadata do |object|
+    object.metadata&.as_json(only: %i[
+                               issuer description certificate_type
+                               degree_info certificate_info certification_info
+                             ])
+  end
+
+  attribute :file_url do |object|
+    Rails.application.routes.url_helpers.rails_blob_url(object.file, only_path: false) if object.file.attached?
+  end
 end

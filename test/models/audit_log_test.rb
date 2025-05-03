@@ -20,7 +20,7 @@
 #
 #  fk_rails_...  (admin_user_id => admin_users.id)
 #
-require "test_helper"
+require 'test_helper'
 
 class AuditLogTest < ActiveSupport::TestCase
   # test "the truth" do

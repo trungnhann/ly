@@ -8,6 +8,8 @@ development:
         socket_timeout: 5
         max_pool_size: 5
         min_pool_size: 1
+  options:
+    log_level: :warn
 
 test:
   clients:
