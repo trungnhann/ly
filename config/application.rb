@@ -31,15 +31,8 @@ module DatnCmt
     # Only loads a smaller set of middleware suitable for API only apps.
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
-    config.api_only = false
+    config.api_only = true
 
-    # Enable helper methods required by ActiveAdmin
-    config.action_controller.include_all_helpers = true
-
-    config.middleware.use ActionDispatch::Cookies
-    config.middleware.use ActionDispatch::Flash
-    config.middleware.use Rack::MethodOverride
-    config.middleware.use ActionDispatch::Session::CookieStore, key: 'recomagic'
     config.generators do |g|
       g.orm :active_record
     end

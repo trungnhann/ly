@@ -15,8 +15,6 @@ gem 'puma', '>= 5.0'
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[windows jruby]
 
-# Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
-gem 'activeadmin', '4.0.0.beta15'
 gem 'grpc'
 gem 'grpc-tools'
 gem 'sassc-rails'
@@ -27,7 +25,6 @@ gem 'solid_queue'
 # Plus integrations with:
 gem 'cancancan'
 gem 'draper'
-gem 'importmap-rails', '~> 2.1'
 gem 'pundit'
 
 gem 'bootsnap', require: false
@@ -48,12 +45,7 @@ gem 'ransack'
 
 gem 'mongoid', '~> 9.0'
 gem 'mongoid-paperclip', require: 'mongoid_paperclip'
-gem 'select2-rails'
 gem 'mongoid-slug'
-# gem "mongoid-history" # Tạm thời tắt
-# gem "mongoid-audit" # Tạm thời tắt
-# gem "kaminari" # Tạm thời tắt
-# gem "kaminari-mongoid" # Tạm thời tắt
 
 # HTTP client
 gem 'httparty'

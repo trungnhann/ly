@@ -32,7 +32,7 @@ class AdminUser < ApplicationRecord
   enum :user_type, {
     superadmin: 'superadmin',
     admin: 'admin',
-    accountant: 'accountant'
+    student: 'student'
   }, prefix: true
 
   validates :user_type, presence: true

@@ -53,15 +53,6 @@ GEM
       erubi (~> 1.11)
       rails-dom-testing (~> 2.2)
       rails-html-sanitizer (~> 1.6)
-    activeadmin (4.0.0.beta15)
-      arbre (~> 2.0)
-      csv
-      formtastic (>= 3.1)
-      formtastic_i18n (>= 0.4)
-      inherited_resources (~> 2.0)
-      kaminari (>= 1.2.1)
-      railties (>= 7.0)
-      ransack (>= 4.0)
     activejob (8.0.2)
       activesupport (= 8.0.2)
       globalid (>= 0.3.6)
@@ -94,8 +85,6 @@ GEM
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
-    arbre (2.2.0)
-      activesupport (>= 7.0)
     ast (2.4.3)
     aws-eventstream (1.3.2)
     aws-partitions (1.1093.0)
@@ -174,9 +163,6 @@ GEM
       tzinfo
     ffi (1.17.1-arm64-darwin)
     ffi (1.17.1-x86_64-linux-gnu)
-    formtastic (5.0.0)
-      actionpack (>= 6.0.0)
-    formtastic_i18n (0.7.0)
     fugit (1.11.1)
       et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
@@ -197,24 +183,12 @@ GEM
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
     grpc-tools (1.71.0)
-    has_scope (0.8.2)
-      actionpack (>= 5.2)
-      activesupport (>= 5.2)
     httparty (0.23.1)
       csv
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
-    importmap-rails (2.1.0)
-      actionpack (>= 6.0.0)
-      activesupport (>= 6.0.0)
-      railties (>= 6.0.0)
-    inherited_resources (2.1.0)
-      actionpack (>= 7.0)
-      has_scope (>= 0.6)
-      railties (>= 7.0)
-      responders (>= 2)
     io-console (0.8.0)
     irb (1.15.2)
       pp (>= 0.6.0)
@@ -237,18 +211,6 @@ GEM
       sshkit (>= 1.23.0, < 2.0)
       thor (~> 1.3)
       zeitwerk (>= 2.6.18, < 3.0)
-    kaminari (1.2.2)
-      activesupport (>= 4.1.0)
-      kaminari-actionview (= 1.2.2)
-      kaminari-activerecord (= 1.2.2)
-      kaminari-core (= 1.2.2)
-    kaminari-actionview (1.2.2)
-      actionview
-      kaminari-core (= 1.2.2)
-    kaminari-activerecord (1.2.2)
-      activerecord
-      kaminari-core (= 1.2.2)
-    kaminari-core (1.2.2)
     kt-paperclip (7.2.2)
       activemodel (>= 4.2.0)
       activesupport (>= 4.2.0)
@@ -422,7 +384,6 @@ GEM
       sprockets-rails
       tilt
     securerandom (0.4.1)
-    select2-rails (4.0.13)
     solid_cable (3.0.7)
       actioncable (>= 7.2)
       activejob (>= 7.2)
@@ -487,7 +448,6 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  activeadmin (= 4.0.0.beta15)
   annotate!
   aws-sdk-s3
   bootsnap
@@ -501,7 +461,6 @@ DEPENDENCIES
   grpc
   grpc-tools
   httparty
-  importmap-rails (~> 2.1)
   jsonapi-serializer
   kamal
   mongoid (~> 9.0)
@@ -516,7 +475,6 @@ DEPENDENCIES
   ransack
   rubocop-rails-omakase
   sassc-rails
-  select2-rails
   solid_cable
   solid_cache
   solid_queue

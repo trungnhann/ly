@@ -69,7 +69,7 @@ class Certificate < ApplicationRecord
   def metadata
     return nil if metadata_id.blank?
 
-    CertificateMetadata.find(metadata_id)
+    CertificateMetadata.find_by(id: metadata_id)
   end
 
   def metadata=(metadata_attributes)

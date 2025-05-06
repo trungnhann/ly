@@ -1,2 +1,1 @@
-//= require toggle_password.js
-//= require active_admin
+// File JavaScript mặc định cho ứng dụng

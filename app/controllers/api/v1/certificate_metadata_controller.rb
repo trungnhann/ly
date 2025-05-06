@@ -37,7 +37,7 @@ module Api
       private
 
       def set_certificate_metadata
-        @certificate_metadata = CertificateMetadata.find(params[:id])
+        @certificate_metadata = CertificateMetadata.find_by(params[:id])
       end
 
       def certificate_metadata_params

@@ -4,40 +4,39 @@ module Api
       before_action :set_certificate, only: %i[show update destroy]
 
       def index
-        @certificates = Certificate.all
-        json_response(@certificates, CertificateSerializer)
+        result = CertificatesService.index(params)
+        render json: result[:data], status: result[:status]
       end
 
       def show
-        json_response(@certificate, CertificateSerializer)
+        result = CertificatesService.show(@certificate)
+        render json: result[:data], status: result[:status]
       end
 
       def create
-        @certificate = Certificate.new(certificate_params)
-        return unless @certificate.save!
-
-        json_response(@certificate, CertificateSerializer, status: :created)
+        result = CertificatesService.create(certificate_params)
+        render json: result[:data] || { errors: result[:errors] }, status: result[:status]
       end
 
       def update
-        return unless @certificate.update!(certificate_params)
-
-        json_response(@certificate, CertificateSerializer)
+        result = CertificatesService.update(@certificate, certificate_params)
+        render json: result[:data] || { errors: result[:errors] }, status: result[:status]
       end
 
       def find_by_code
-        cert = Certificate.find_by(code: params[:code])
+        result = CertificatesService.find_by(code: params[:code])
 
-        if cert.present?
-          json_response(cert, CertificateSerializer, include: [:student])
+        if result[:errors]
+          render json: { error: result[:errors].first }, status: result[:status]
         else
-          render json: { error: 'Không tìm thấy chứng chỉ với mã đã cung cấp' }, status: :not_found
+          render json: result[:data], status: result[:status]
         end
       end
 
       def destroy
-        @certificate.destroy
-        head :no_content
+        result = CertificatesService.destroy(@certificate)
+        render json: result[:message] ? { message: result[:message] } : { errors: result[:errors] },
+               status: result[:status]
       end
 
       private
@@ -48,7 +47,7 @@ module Api
 
       def certificate_params
         params.expect(
-          certificate: [:code, :title, :certificate_type, :issue_date, :expiry_date, :is_verified, :student_id,
+          certificate: [:code, :title, :certificate_type, :issue_date, :expiry_date, :is_verified, :student_id, :file,
                         { metadata: [
                           :issuer, :description,
                           { degree_info: %i[level major specialization grade graduation_year] },
