@@ -27,6 +27,14 @@ Rails.application.routes.draw do
         resource :metadata, controller: 'certificate_metadata'
       end
 
+      resources :face do
+        collection do
+          post :register
+          post :identify
+          post :attendance
+        end
+      end
+
       namespace :public do
         get 'certificates/:code', to: 'certificates#lookup'
       end

@@ -19,6 +19,7 @@
 class Student < ApplicationRecord
   include Ransackable
   include Auditable
+  has_one :admin_user
 
   METADATA_FIELDS = {
     metadata_phone: :phone,

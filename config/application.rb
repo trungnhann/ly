@@ -27,6 +27,8 @@ module DatnCmt
     # Support both API and web interfaces for ActiveAdmin
     config.time_zone = 'Hanoi'
     config.eager_load_paths << Rails.root.join('utils')
+    config.eager_load_paths << Rails.root.join('lib')
+    config.autoload_paths << Rails.root.join('lib')
 
     # Only loads a smaller set of middleware suitable for API only apps.
     # Middleware like session, flash, cookies can be added back manually.

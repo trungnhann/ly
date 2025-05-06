@@ -40,11 +40,17 @@ module StudentsService
   end
 
   def destroy(student)
-    student.avatar.purge if student.avatar.attached?
-    student.metadata&.delete
-    student.destroy!
+    ActiveRecord::Base.transaction do
+      student.avatar.purge if student.avatar.attached?
+      student.metadata&.delete
 
-    { message: 'Student was successfully deleted.', status: :ok }
+      # Also delete the associated AdminUser if it exists
+      student.admin_user&.destroy!
+
+      student.destroy!
+
+      { message: 'Student was successfully deleted.', status: :ok }
+    end
   rescue StandardError => e
     { errors: ["Failed to delete student: #{e.message}"], status: :unprocessable_entity }
   end

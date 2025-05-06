@@ -2,7 +2,7 @@
 # Source: face.proto for package 'face_recognition'
 
 require 'grpc'
-require 'face_pb'
+require_relative 'face_pb'
 
 module FaceRecognition
   module FaceRecognition
