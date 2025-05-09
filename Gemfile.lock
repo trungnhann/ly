@@ -182,7 +182,7 @@ GEM
     grpc (1.72.0-x86_64-linux)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc-tools (1.71.0)
+    grpc-tools (1.72.0)
     httparty (0.23.1)
       csv
       mini_mime (>= 1.0.0)
