@@ -8,6 +8,9 @@ service FaceRecognition {
 
   // Identify a face and return student ID
   rpc IdentifyFace(IdentifyRequest) returns (IdentifyResponse) {}
+
+  // Delete face embedding by student ID
+  rpc DeleteFace(DeleteFaceRequest) returns (DeleteFaceResponse) {}
 }
 
 message RegisterRequest {
@@ -29,4 +32,13 @@ message IdentifyResponse {
   float confidence = 2;
   bool success = 3;
   string message = 4;
+}
+
+message DeleteFaceRequest {
+  string student_id = 1;
+}
+
+message DeleteFaceResponse {
+  bool success = 1;
+  string message = 2;
 }

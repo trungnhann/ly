@@ -1,8 +1,6 @@
-module CertificatesService
-  module_function
-
+class CertificatesService
   def index(params)
-    certificates = Certificate.all
+    certificates = Certificate.accessible_by(Ability.new(Current.user))
     certificates = certificates.where(student_id: params[:student_id]) if params[:student_id].present?
     certificates = certificates.where(certificate_type: params[:certificate_type]) if params[:certificate_type].present?
 
@@ -85,17 +83,14 @@ module CertificatesService
 
     metadata = certificate.metadata || CertificateMetadata.new(certificate_id: certificate.id.to_s)
 
-    # Cài đặt các trường cơ bản
     metadata.certificate_type = certificate.certificate_type
     metadata.issuer = metadata_params[:issuer] if metadata_params[:issuer].present?
     metadata.description = metadata_params[:description] if metadata_params[:description].present?
 
-    # Đảm bảo rằng tất cả các hash đều được khởi tạo là rỗng
     metadata.degree_info = {}
     metadata.certificate_info = {}
     metadata.certification_info = {}
 
-    # Dựa vào loại chứng chỉ, chỉ cập nhật trường phù hợp
     case certificate.certificate_type
     when 'degree'
       if metadata_params[:degree_info].present?

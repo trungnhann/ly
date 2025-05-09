@@ -11,11 +11,15 @@ module Api
 
         # POST /api/v1/auth/sign_in
         def create
-          user = AdminUser.find_by(email: sign_in_params[:email])
+          user = AdminUser.find_by(email: sign_in_params[:email].downcase)
 
           if user&.valid_password?(sign_in_params[:password])
             self.resource = user
             sign_in(resource_name, resource)
+            unless user.face_verification_setting
+              user.create_face_verification_setting(FaceVerificationSetting.default_settings)
+            end
+
             respond_with(resource)
           else
             render json: { status: { code: 401, message: 'Invalid email or password.' } }, status: :unauthorized

@@ -5,9 +5,16 @@ Rails.application.routes.draw do
     namespace :v1 do
       devise_for :admin_users,
                  path: 'auth',
-                 controllers: { sessions: 'api/v1/auth/sessions' },
-                 path_names: { sign_in: 'sign_in', sign_out: 'sign_out' },
-                 skip: %i[registrations passwords confirmations]
+                 controllers: {
+                   sessions: 'api/v1/auth/sessions',
+                   passwords: 'api/v1/auth/passwords'
+                 },
+                 path_names: {
+                   sign_in: 'sign_in',
+                   sign_out: 'sign_out'
+                 },
+                 skip: %i[registrations confirmations]
+
       devise_scope :admin_user do
         post 'auth/sign_up', to: 'auth/sessions#register'
         delete 'auth/sign_out', to: 'auth/sessions#destroy'
@@ -25,15 +32,23 @@ Rails.application.routes.draw do
 
       resources :certificates do
         resource :metadata, controller: 'certificate_metadata'
+        collection do
+          get :find_by_code
+          post :verify_face_authentication
+        end
       end
 
       resources :face do
         collection do
           post :register
           post :identify
-          post :attendance
+        end
+        member do
+          delete :destroy
         end
       end
+
+      resource :face_verification_setting, only: %i[show update]
 
       namespace :public do
         get 'certificates/:code', to: 'certificates#lookup'

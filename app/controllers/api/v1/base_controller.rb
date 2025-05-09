@@ -4,6 +4,7 @@ module Api
       skip_before_action :verify_authenticity_token, if: -> { request.format.json? }
       include JwtAuthenticatable
       before_action :authenticate_user!
+      before_action :set_current_session
 
       DEFAULT_PAGE = 1
       PER_PAGE = 10
@@ -16,6 +17,9 @@ module Api
       rescue_from ActionController::ParameterMissing, with: :handle_missing_param
       rescue_from JWT::DecodeError, with: :handle_jwt_error
       rescue_from JWT::ExpiredSignature, with: :handle_token_expired
+      rescue_from CanCan::AccessDenied do |exception|
+        render json: { errors: ['Bạn không có quyền truy cập tài nguyên này'] }, status: :unauthorized
+      end
 
       def json_response(resource, serializer_class, options = {})
         serializer_options = {}
@@ -97,6 +101,10 @@ module Api
       end
 
       private
+
+      def set_current_session
+        Current.session = session
+      end
 
       def error_response(exception, message, status)
         response = {

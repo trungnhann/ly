@@ -1,25 +1,38 @@
 module Api
   module V1
     class CertificatesController < BaseController
-      before_action :set_certificate, only: %i[show update destroy]
+      load_and_authorize_resource
+      include FaceVerification
 
       def index
-        result = CertificatesService.index(params)
+        result = CertificatesService.new.index(params)
         render json: result[:data], status: result[:status]
       end
 
       def show
-        result = CertificatesService.show(@certificate)
+        result = CertificatesService.new.show(@certificate)
         render json: result[:data], status: result[:status]
       end
 
+      def verify_face_authentication
+        image = params[:image]
+        return render json: { error: 'Vui lòng tải lên ảnh để xác thực' }, status: :unprocessable_entity if image.blank?
+
+        image_data = image.read
+        if verify_face(image_data)
+          render json: { success: true, message: 'Xác thực khuôn mặt thành công' }
+        else
+          render json: { success: false, error: 'Xác thực khuôn mặt thất bại' }, status: :unauthorized
+        end
+      end
+
       def create
-        result = CertificatesService.create(certificate_params)
+        result = CertificatesService.new.create(certificate_params)
         render json: result[:data] || { errors: result[:errors] }, status: result[:status]
       end
 
       def update
-        result = CertificatesService.update(@certificate, certificate_params)
+        result = CertificatesService.new.update(@certificate, certificate_params)
         render json: result[:data] || { errors: result[:errors] }, status: result[:status]
       end
 
@@ -34,16 +47,12 @@ module Api
       end
 
       def destroy
-        result = CertificatesService.destroy(@certificate)
+        result = CertificatesService.new.destroy(@certificate)
         render json: result[:message] ? { message: result[:message] } : { errors: result[:errors] },
                status: result[:status]
       end
 
       private
-
-      def set_certificate
-        @certificate = Certificate.find(params[:id])
-      end
 
       def certificate_params
         params.expect(

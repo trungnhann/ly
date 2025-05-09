@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_06_073354) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_08_154218) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -88,6 +88,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_06_073354) do
     t.index ["student_id"], name: "index_certificates_on_student_id"
   end
 
+  create_table "face_verification_settings", force: :cascade do |t|
+    t.bigint "admin_user_id", null: false
+    t.integer "verification_timeout", default: 1800, null: false
+    t.boolean "require_face_verification", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["admin_user_id"], name: "index_face_verification_settings_on_admin_user_id"
+  end
+
   create_table "students", force: :cascade do |t|
     t.string "code", null: false
     t.string "full_name", null: false
@@ -105,4 +114,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_06_073354) do
   add_foreign_key "admin_users", "students"
   add_foreign_key "audit_logs", "admin_users"
   add_foreign_key "certificates", "students"
+  add_foreign_key "face_verification_settings", "admin_users"
 end

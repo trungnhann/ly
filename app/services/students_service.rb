@@ -1,6 +1,4 @@
-module StudentsService
-  module_function
-
+class StudentsService
   def index(params)
     students = Student.all
     students = students.filter_by_code(params[:code]) if params[:code].present?
@@ -16,15 +14,32 @@ module StudentsService
   end
 
   def create(params)
-    student = Student.new(params.except(:avatar))
-    student.avatar.attach(params[:avatar]) if params[:avatar].present?
+    ActiveRecord::Base.transaction do
+      student = Student.new(params.except(:avatar))
+      student.avatar.attach(params[:avatar]) if params[:avatar].present?
 
-    if student.save
-      student.create_or_update_metadata(params)
-      { data: StudentSerializer.new(student).serializable_hash, status: :created }
-    else
-      { errors: student.errors.full_messages, status: :unprocessable_entity }
+      if student.save
+        admin_user = AdminUser.create!(
+          email: "#{student.code}@actvn.edu.vn",
+          password: 'password123',
+          password_confirmation: 'password123',
+          user_type: 'student',
+          student_id: student.id,
+          full_name: student.full_name
+        )
+
+        admin_user.create_face_verification_setting(FaceVerificationSetting.default_settings)
+
+        student.create_or_update_metadata(params)
+        { data: StudentSerializer.new(student).serializable_hash, status: :created }
+      else
+        { errors: student.errors.full_messages, status: :unprocessable_entity }
+      end
     end
+  rescue ActiveRecord::RecordInvalid => e
+    { errors: e.record.errors.full_messages, status: :unprocessable_entity }
+  rescue StandardError => e
+    { errors: [e.message], status: :unprocessable_entity }
   end
 
   def update(student, params)
@@ -44,7 +59,6 @@ module StudentsService
       student.avatar.purge if student.avatar.attached?
       student.metadata&.delete
 
-      # Also delete the associated AdminUser if it exists
       student.admin_user&.destroy!
 
       student.destroy!

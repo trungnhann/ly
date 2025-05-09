@@ -1,10 +1,10 @@
 module Api
   module V1
     class StudentsController < BaseController
-      before_action :set_student, only: %i[show update destroy show_metadata]
+      load_and_authorize_resource
 
       def index
-        result = StudentsService.index(params)
+        result = StudentsService.new.index(params)
         render json: result[:data], status: result[:status]
       end
 
@@ -40,26 +40,22 @@ module Api
       end
 
       def create
-        result = StudentsService.create(student_params)
+        result = StudentsService.new.create(student_params)
         render json: result[:data] || { errors: result[:errors] }, status: result[:status]
       end
 
       def update
-        result = StudentsService.update(@student, student_params)
+        result = StudentsService.new.update(@student, student_params)
         render json: result[:data] || { errors: result[:errors] }, status: result[:status]
       end
 
       def destroy
-        result = StudentsService.destroy(@student)
+        result = StudentsService.new.destroy(@student)
         render json: result[:message] ? { message: result[:message] } : { errors: result[:errors] },
                status: result[:status]
       end
 
       private
-
-      def set_student
-        @student = Student.find(params[:id])
-      end
 
       def student_params
         params.expect(

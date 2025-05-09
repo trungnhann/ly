@@ -31,7 +31,8 @@ class AdminUser < ApplicationRecord
   include Ransackable
   include Devise::JWT::RevocationStrategies::JTIMatcher
   belongs_to :student, optional: true
-  # include Auditable
+  has_one :face_verification_setting, dependent: :destroy
+  include Auditable
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,

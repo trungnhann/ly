@@ -18,6 +18,8 @@ module FaceRecognition
       rpc :RegisterFace, ::FaceRecognition::RegisterRequest, ::FaceRecognition::RegisterResponse
       # Identify a face and return student ID
       rpc :IdentifyFace, ::FaceRecognition::IdentifyRequest, ::FaceRecognition::IdentifyResponse
+      # Delete face embedding by student ID
+      rpc :DeleteFace, ::FaceRecognition::DeleteFaceRequest, ::FaceRecognition::DeleteFaceResponse
     end
 
     Stub = Service.rpc_stub_class

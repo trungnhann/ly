@@ -1,6 +1,6 @@
 require 'base64'
-require Rails.root.join('lib/grpc/face_pb')
-require Rails.root.join('lib/grpc/face_services_pb')
+require_relative '../../lib/grpc/face_pb'
+require_relative '../../lib/grpc/face_services_pb'
 
 class FaceRecognitionClient
   def initialize(host = 'localhost:50051')
@@ -100,6 +100,25 @@ class FaceRecognitionClient
         success: response.success,
         student_id: response.student_id,
         confidence: response.confidence,
+        message: response.message
+      }
+    rescue GRPC::BadStatus => e
+      Rails.logger.error("gRPC error: #{e.message}")
+      { success: false, message: e.message }
+    end
+  end
+
+  def delete_face(student_id)
+    # Tạo request
+    request = FaceRecognition::DeleteFaceRequest.new(
+      student_id: student_id
+    )
+
+    # Gửi request
+    begin
+      response = @stub.delete_face(request)
+      {
+        success: response.success,
         message: response.message
       }
     rescue GRPC::BadStatus => e
