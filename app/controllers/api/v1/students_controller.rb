@@ -55,12 +55,37 @@ module Api
                status: result[:status]
       end
 
+      def import
+        if params[:file].blank?
+          return render json: { error: 'Vui lòng chọn file Excel để import' }, status: :unprocessable_entity
+        end
+
+        # Lưu file tạm thời
+        temp_file = params[:file].tempfile
+        service = StudentImportService.new(temp_file.path)
+        result = service.import
+
+        if result[:error_count].zero?
+          render json: {
+            message: "Import thành công #{result[:success_count]} sinh viên",
+            success_count: result[:success_count]
+          }, status: :ok
+        else
+          render json: {
+            message: "Import thất bại #{result[:error_count]} sinh viên",
+            success_count: result[:success_count],
+            error_count: result[:error_count],
+            errors: result[:errors]
+          }, status: :unprocessable_entity
+        end
+      end
+
       private
 
       def student_params
         params.expect(
           student: %i[code full_name id_card_number email avatar
-                      metadata_phone metadata_major metadata_specialization]
+                      metadata_phone metadata_major metadata_specialization metadata_address]
         )
       end
     end

@@ -49,6 +49,7 @@ gem 'mongoid-slug'
 
 # HTTP client
 gem 'httparty'
+gem 'roo'
 
 group :development, :test do
   gem 'annotate', github: 'andynu/annotate_models', branch: 'rails-8-0'

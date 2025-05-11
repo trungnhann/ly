@@ -4,6 +4,11 @@ class CertificatesService
     certificates = certificates.where(student_id: params[:student_id]) if params[:student_id].present?
     certificates = certificates.where(certificate_type: params[:certificate_type]) if params[:certificate_type].present?
 
+    # if params[:q].present?
+    #   keyword = "%#{params[:q]}%"
+    #   certificates = certificates.where('title ILIKE ? OR code ILIKE ?', keyword, keyword)
+    # end
+
     data = certificates.map do |certificate|
       CertificateSerializer.new(certificate).serializable_hash
     end

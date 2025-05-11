@@ -18,7 +18,7 @@ class StudentsService
       student = Student.new(params.except(:avatar))
       student.avatar.attach(params[:avatar]) if params[:avatar].present?
 
-      if student.save
+      if student.save!
         admin_user = AdminUser.create!(
           email: "#{student.code}@actvn.edu.vn",
           password: 'password123',
@@ -43,15 +43,31 @@ class StudentsService
   end
 
   def update(student, params)
-    student.avatar.purge if params[:avatar].present? && student.avatar.attached?
-    student.avatar.attach(params[:avatar]) if params[:avatar].present?
-
-    if student.update(params.except(:avatar))
-      student.create_or_update_metadata(params)
-      { data: StudentSerializer.new(student).serializable_hash, status: :ok }
-    else
-      { errors: student.errors.full_messages, status: :unprocessable_entity }
+    if student.admin_user&.user_type_student? &&
+       (params[:code].present? || params[:full_name].present? || params[:email].present? || params[:id_card_number].present?)
+      return {
+        errors: ['Không được phép cập nhật mã sinh viên, họ tên, email và số CMND/CCCD'],
+        status: :forbidden
+      }
     end
+
+    ActiveRecord::Base.transaction do
+      if params[:avatar].present?
+        student.avatar.purge if student.avatar.attached?
+        student.avatar.attach(params[:avatar])
+      end
+
+      student.create_or_update_metadata(params)
+      {
+        data: StudentSerializer.new(student).serializable_hash,
+        status: :ok
+      }
+    end
+  rescue StandardError => e
+    {
+      errors: [e.message],
+      status: :unprocessable_entity
+    }
   end
 
   def destroy(student)

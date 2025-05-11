@@ -26,8 +26,11 @@ Rails.application.routes.draw do
 
       resources :students do
         resource :metadata, controller: 'student_metadata'
-        collection { post :scan_id_card }
-        member     { get  :metadata, to: 'students#show_metadata' }
+        collection do
+          post :scan_id_card
+          post :import
+        end
+        member { get :metadata, to: 'students#show_metadata' }
       end
 
       resources :certificates do

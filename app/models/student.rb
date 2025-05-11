@@ -24,14 +24,15 @@ class Student < ApplicationRecord
   METADATA_FIELDS = {
     metadata_phone: :phone,
     metadata_major: :major,
-    metadata_specialization: :specialization
+    metadata_specialization: :specialization,
+    metadata_address: :address
   }.freeze
 
   has_one_attached :avatar
 
   has_many :certificates, dependent: :destroy
 
-  attr_accessor :metadata_phone, :metadata_major, :metadata_specialization
+  attr_accessor :metadata_phone, :metadata_major, :metadata_specialization, :metadata_address
 
   validates :code, presence: true, uniqueness: true
   validates :full_name, presence: true
@@ -57,7 +58,8 @@ class Student < ApplicationRecord
     meta_params = {
       phone: params['metadata_phone'],
       major: params['metadata_major'],
-      specialization: params['metadata_specialization']
+      specialization: params['metadata_specialization'],
+      address: params['metadata_address']
     }.compact
 
     existing_metadata = metadata

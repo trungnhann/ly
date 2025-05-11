@@ -6,6 +6,7 @@ class StudentMetadata
   field :student_id, type: String
   field :phone, type: String
   field :major, type: String
+  field :address, type: String
   field :specialization, type: String
   index({ student_id: 1 }, { unique: true })
 
