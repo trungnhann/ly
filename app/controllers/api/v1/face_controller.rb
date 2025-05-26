@@ -2,6 +2,7 @@ module Api
   module V1
     class FaceController < BaseController
       before_action :set_face_client
+      skip_before_action :check_face_verification, only: [:register]
 
       # POST /api/v1/faces/register
       # Đăng ký khuôn mặt mới
@@ -49,6 +50,18 @@ module Api
           }, status: :ok
         else
           render json: { success: false, error: result[:message] }, status: :unprocessable_entity
+        end
+      end
+
+      def verify_face_authentication
+        image = params[:image]
+        return render json: { error: 'Vui lòng tải lên ảnh để xác thực' }, status: :unprocessable_entity if image.blank?
+
+        image_data = image.read
+        if verify_face(image_data)
+          render json: { success: true, message: 'Xác thực khuôn mặt thành công' }
+        else
+          render json: { success: false, error: 'Xác thực khuôn mặt thất bại' }, status: :unauthorized
         end
       end
 

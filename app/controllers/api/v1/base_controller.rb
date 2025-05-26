@@ -2,9 +2,15 @@ module Api
   module V1
     class BaseController < ApplicationController
       skip_before_action :verify_authenticity_token, if: -> { request.format.json? }
+
+      include ActionController::MimeResponds
       include JwtAuthenticatable
+      include Pagy::Backend
+
       before_action :authenticate_user!
       before_action :set_current_session
+      before_action :set_default_pagination
+      include FaceVerification
 
       DEFAULT_PAGE = 1
       PER_PAGE = 10
@@ -17,9 +23,7 @@ module Api
       rescue_from ActionController::ParameterMissing, with: :handle_missing_param
       rescue_from JWT::DecodeError, with: :handle_jwt_error
       rescue_from JWT::ExpiredSignature, with: :handle_token_expired
-      rescue_from CanCan::AccessDenied do |exception|
-        render json: { errors: ['Bạn không có quyền truy cập tài nguyên này'] }, status: :unauthorized
-      end
+      rescue_from CanCan::AccessDenied, with: :handle_forbidden
 
       def json_response(resource, serializer_class, options = {})
         serializer_options = {}
@@ -33,30 +37,22 @@ module Api
 
         serializer_options.merge!(options.except(:per_page, :include))
 
-        if resource.respond_to?(:to_a) && !resource.is_a?(ApplicationRecord)
-          # Xử lý filter
-          filtered_collection = apply_filters(resource)
+        is_collection = resource.is_a?(Enumerable) && !resource.is_a?(ApplicationRecord)
 
-          # Xử lý phân trang
-          page = params[:page] || DEFAULT_PAGE
-          per_page = params[:per_page] || options[:per_page] || PER_PAGE
+        if is_collection
+          pagy_data, records = paginate(resource)
 
-          pagy_data, records = paginate(filtered_collection, page: page, per_page: per_page)
-
-          # Thêm metadata phân trang
           serializer_options[:meta] ||= {}
           serializer_options[:meta].merge!({
-                                             current_page: pagy_data[:page],
-                                             total_pages: pagy_data[:pages],
-                                             total_count: pagy_data[:count],
-                                             per_page: pagy_data[:items]
+                                             current_page: pagy_data.page,
+                                             total_pages: pagy_data.pages,
+                                             total_count: pagy_data.count
                                            })
 
-          # Trả về kết quả dạng JSON:API cho collection
           render json: serializer_class.new(records, serializer_options).serializable_hash
         else
           status = options[:status] || :ok
-          render json: serializer_class.new(resource, serializer_options).serializable_hash, status: status
+          render json: serializer_class.new(resource).serializable_hash, status: status
         end
       end
 
@@ -106,6 +102,19 @@ module Api
         Current.session = session
       end
 
+      def set_default_pagination
+        @default_page = AppSetting.get('default_page', 1)
+        @default_per_page = AppSetting.get('DEFAULT_PER_PAGE', 10)
+      end
+
+      def paginate(collection)
+        page = params[:page].presence || @default_page.to_i
+        per_page = params[:per_page].presence || @default_per_page.to_i
+
+        pagy_object, paginated_collection = pagy(collection, limit: per_page, page: page)
+        [pagy_object, paginated_collection]
+      end
+
       def error_response(exception, message, status)
         response = {
           message: message,
@@ -116,39 +125,21 @@ module Api
         render json: response, status: status, content_type: 'application/json'
       end
 
-      def paginate(collection, page: DEFAULT_PAGE, per_page: PER_PAGE)
-        count = collection.count
-        pages = (count.to_f / per_page).ceil
-
-        offset = (page.to_i - 1) * per_page.to_i
-
-        records = collection.offset(offset).limit(per_page)
-
-        pagy_data = {
-          count: count,
-          page: page.to_i,
-          items: per_page.to_i,
-          pages: pages
-        }
-
-        [pagy_data, records]
-      end
-
-      # Phương thức xử lý filter dựa trên model scopes
-      def apply_filters(collection)
-        return collection if params[:filter].blank?
-
-        filtered = collection
-
-        params[:filter].each do |field, value|
-          next if value.blank?
-
-          filter_method = "filter_by_#{field}"
-          filtered = filtered.public_send(filter_method, value) if filtered.respond_to?(filter_method)
-        end
-
-        filtered
-      end
+      # # Phương thức xử lý filter dựa trên model scopes
+      # def apply_filters(collection)
+      #   return collection if params[:filter].blank?
+      #
+      #   filtered = collection
+      #
+      #   params[:filter].each do |field, value|
+      #     next if value.blank?
+      #
+      #     filter_method = "filter_by_#{field}"
+      #     filtered = filtered.public_send(filter_method, value) if filtered.respond_to?(filter_method)
+      #   end
+      #
+      #   filtered
+      # end
     end
   end
 end

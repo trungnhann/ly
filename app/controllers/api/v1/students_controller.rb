@@ -4,8 +4,10 @@ module Api
       load_and_authorize_resource
 
       def index
-        result = StudentsService.new.index(params)
-        render json: result[:data], status: result[:status]
+        students = Student.all
+        students = students.filter_by_code(params[:code]) if params[:code].present?
+        students = students.filter_by_id_card_number(params[:id_card_number]) if params[:id_card_number].present?
+        json_response(students, StudentSerializer)
       end
 
       def show
@@ -60,7 +62,6 @@ module Api
           return render json: { error: 'Vui lòng chọn file Excel để import' }, status: :unprocessable_entity
         end
 
-        # Lưu file tạm thời
         temp_file = params[:file].tempfile
         service = StudentImportService.new(temp_file.path)
         result = service.import

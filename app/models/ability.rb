@@ -28,7 +28,6 @@ class Ability
     can %i[read update], Student, id: student_id
     can :manage, FaceVerificationSetting, id: student_id
     can :read, Certificate, student_id: student_id
-    can :verify_face_authentication, Certificate, student_id: student_id
   end
 
   def guest_abilities; end

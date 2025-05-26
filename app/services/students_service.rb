@@ -1,18 +1,4 @@
 class StudentsService
-  def index(params)
-    students = Student.all
-    students = students.filter_by_code(params[:code]) if params[:code].present?
-    students = students.filter_by_id_card_number(params[:id_card_number]) if params[:id_card_number].present?
-
-    data = students.map do |student|
-      StudentSerializer.new(student, include: params[:include]&.split(',')&.map(&:to_sym)).serializable_hash
-    end
-
-    { data:, status: :ok }
-  rescue StandardError => e
-    { errors: [e.message], status: :internal_server_error }
-  end
-
   def create(params)
     ActiveRecord::Base.transaction do
       student = Student.new(params.except(:avatar))

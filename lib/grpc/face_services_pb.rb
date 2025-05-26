@@ -7,7 +7,6 @@ require_relative 'face_pb'
 module FaceRecognition
   module FaceRecognition
     class Service
-
       include ::GRPC::GenericService
 
       self.marshal_class_method = :encode

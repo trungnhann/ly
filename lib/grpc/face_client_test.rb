@@ -17,9 +17,9 @@ module FaceRecognition
       )
 
       response = @stub.register_face(request)
-      puts "Register Response: #{response.inspect}"
+      Rails.logger.debug { "Register Response: #{response.inspect}" }
     rescue GRPC::BadStatus => e
-      puts "Register Error: #{e.message}"
+      Rails.logger.debug { "Register Error: #{e.message}" }
     end
 
     # Test nhận diện khuôn mặt
@@ -30,9 +30,9 @@ module FaceRecognition
       )
 
       response = @stub.identify_face(request)
-      puts "Identify Response: #{response.inspect}"
+      Rails.logger.debug { "Identify Response: #{response.inspect}" }
     rescue GRPC::BadStatus => e
-      puts "Identify Error: #{e.message}"
+      Rails.logger.debug { "Identify Error: #{e.message}" }
     end
   end
 end

@@ -2,28 +2,19 @@ module Api
   module V1
     class CertificatesController < BaseController
       load_and_authorize_resource
-      include FaceVerification
-
       def index
-        result = CertificatesService.new.index(params)
-        render json: result[:data], status: result[:status]
+        certificates = Certificate.accessible_by(Ability.new(Current.user))
+        certificates = certificates.where(student_id: params[:student_id]) if params[:student_id].present?
+        if params[:certificate_type].present?
+          certificates = certificates.where(certificate_type: params[:certificate_type])
+        end
+
+        json_response(certificates, CertificateSerializer)
       end
 
       def show
         result = CertificatesService.new.show(@certificate)
         render json: result[:data], status: result[:status]
-      end
-
-      def verify_face_authentication
-        image = params[:image]
-        return render json: { error: 'Vui lòng tải lên ảnh để xác thực' }, status: :unprocessable_entity if image.blank?
-
-        image_data = image.read
-        if verify_face(image_data)
-          render json: { success: true, message: 'Xác thực khuôn mặt thành công' }
-        else
-          render json: { success: false, error: 'Xác thực khuôn mặt thất bại' }, status: :unauthorized
-        end
       end
 
       def create

@@ -32,6 +32,7 @@ class AdminUser < ApplicationRecord
   include Devise::JWT::RevocationStrategies::JTIMatcher
   belongs_to :student, optional: true
   has_one :face_verification_setting, dependent: :destroy
+  has_many :notifications, dependent: :destroy
   include Auditable
 
   devise :database_authenticatable, :registerable,
@@ -45,4 +46,13 @@ class AdminUser < ApplicationRecord
   }, prefix: true
 
   validates :user_type, presence: true
+  validates :email, presence: true, uniqueness: true
+
+  after_create :create_face_verification_setting
+
+  private
+
+  def create_face_verification_setting
+    create_face_verification_setting! if user_type_student?
+  end
 end

@@ -32,7 +32,7 @@ module Api
         private
 
         def password_params
-          params.require(:user).permit(:current_password, :password, :password_confirmation)
+          params.expect(user: %i[current_password password password_confirmation])
         end
       end
     end

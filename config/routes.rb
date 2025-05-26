@@ -37,14 +37,24 @@ Rails.application.routes.draw do
         resource :metadata, controller: 'certificate_metadata'
         collection do
           get :find_by_code
-          post :verify_face_authentication
         end
       end
+
+      resources :notifications do
+        member do
+          post :mark_as_read
+        end
+      end
+
+      resources :app_settings, only: %i[index show update create destroy]
+
+      resources :audit_logs, only: %i[index]
 
       resources :face do
         collection do
           post :register
           post :identify
+          post :verify_face_authentication
         end
         member do
           delete :destroy

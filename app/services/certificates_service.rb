@@ -8,12 +8,7 @@ class CertificatesService
     #   keyword = "%#{params[:q]}%"
     #   certificates = certificates.where('title ILIKE ? OR code ILIKE ?', keyword, keyword)
     # end
-
-    data = certificates.map do |certificate|
-      CertificateSerializer.new(certificate).serializable_hash
-    end
-
-    { data:, status: :ok }
+    { data: certificates, status: :ok }
   rescue StandardError => e
     { errors: [e.message], status: :internal_server_error }
   end

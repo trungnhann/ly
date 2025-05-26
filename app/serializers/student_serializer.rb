@@ -18,7 +18,6 @@
 #
 class StudentSerializer < BaseSerializer
   attributes :id, :code, :full_name, :id_card_number, :email, :created_at, :updated_at, :metadata, :avatar_url
-  has_many :certificates, serializer: CertificateCommonSerializer
 
   attribute :avatar_url do |object|
     Rails.application.routes.url_helpers.rails_blob_url(object.avatar, only_path: false) if object.avatar.attached?

@@ -46,6 +46,7 @@ gem 'ransack'
 gem 'mongoid', '~> 9.0'
 gem 'mongoid-paperclip', require: 'mongoid_paperclip'
 gem 'mongoid-slug'
+gem 'solid_queue_dashboard', '~> 0.2.0', github: 'zhuravel/solid-queue-dashboard', branch: 'patch-1'
 
 # HTTP client
 gem 'httparty'

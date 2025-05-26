@@ -42,5 +42,8 @@ module DatnCmt
     config.generators do |g|
       g.orm :active_record
     end
+
+    # Use Solid Queue as the backend for Active Job
+    config.active_job.queue_adapter = :solid_queue
   end
 end
