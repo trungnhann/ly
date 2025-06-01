@@ -26,4 +26,6 @@ class StudentSerializer < BaseSerializer
   def metadata
     StudentMetadataSerializer.new(object.metadata).serializable_hash if object.metadata.present?
   end
+
+  has_many :certificates, serializer: CertificateCommonSerializer
 end

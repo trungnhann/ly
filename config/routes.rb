@@ -55,6 +55,7 @@ Rails.application.routes.draw do
           post :register
           post :identify
           post :verify_face_authentication
+          post :verify_id_card
         end
         member do
           delete :destroy

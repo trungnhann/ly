@@ -37,4 +37,6 @@ class CertificateSerializer < BaseSerializer
   attribute :file_url do |object|
     Rails.application.routes.url_helpers.rails_blob_url(object.file, only_path: false) if object.file.attached?
   end
+
+  belongs_to :student, serializer: StudentSerializer
 end

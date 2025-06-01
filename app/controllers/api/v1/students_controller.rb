@@ -27,7 +27,7 @@ module Api
 
       def scan_id_card
         id_card_data = FptIdCardService.call(params[:image])
-        student = Student.find_by(id_card_number: id_card_data[:id_card][:number])
+        student = Student.find_by(id_card_number: id_card_data[:number])
 
         if student
           render json: StudentSerializer.new(student, include: [:certificates]).serializable_hash,

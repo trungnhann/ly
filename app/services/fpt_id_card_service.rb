@@ -92,18 +92,17 @@ class FptIdCardService < BaseService
     return {} if id_card_data.blank?
 
     {
-      id_card: {
-        number: id_card_data['id'],
-        full_name: id_card_data['name'],
-        date_of_birth: parse_date(id_card_data['dob']),
-        gender: id_card_data['sex'] == 'NAM' ? 'male' : 'female',
-        nationality: id_card_data['nationality'],
-        hometown: id_card_data['home'],
-        address: id_card_data['address'],
-        issue_date: parse_date(id_card_data['doe']),
-        issue_place: id_card_data['address_entities']['province'],
-        expiry_date: parse_date(id_card_data['doe'])
-      }
+      number: id_card_data['id'],
+      full_name: id_card_data['name'],
+      date_of_birth: parse_date(id_card_data['dob']),
+      gender: id_card_data['sex'] == 'NAM' ? 'male' : 'female',
+      nationality: id_card_data['nationality'],
+      hometown: id_card_data['home'],
+      address: id_card_data['address'],
+      issue_date: parse_date(id_card_data['doe']),
+      issue_place: id_card_data['address_entities']['province'],
+      expiry_date: parse_date(id_card_data['doe'])
+
     }
   end
 

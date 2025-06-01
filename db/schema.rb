@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_17_102913) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_30_133411) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -104,6 +104,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_17_102913) do
     t.boolean "require_face_verification", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "failed_attempts", default: 0
+    t.datetime "last_attempt_at"
     t.index ["admin_user_id"], name: "index_face_verification_settings_on_admin_user_id"
   end
 

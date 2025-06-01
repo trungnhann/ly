@@ -61,7 +61,19 @@ module Api
         if verify_face(image_data)
           render json: { success: true, message: 'Xác thực khuôn mặt thành công' }
         else
-          render json: { success: false, error: 'Xác thực khuôn mặt thất bại' }, status: :unauthorized
+          setting = FaceVerificationSetting.find_by(admin_user: Current.user) do |s|
+            s.assign_attributes(FaceVerificationSetting.default_settings)
+          end
+
+          requires_id_card = setting.requires_id_card_verification?
+
+          render json: {
+            success: false,
+            error: 'Xác thực khuôn mặt thất bại',
+            failed_attempts: setting.failed_attempts,
+            max_attempts: FaceVerificationSetting::MAX_FAILED_ATTEMPTS,
+            requires_id_card_verification: requires_id_card
+          }, status: :unauthorized
         end
       end
 
@@ -98,6 +110,32 @@ module Api
           success: false,
           error: 'Đã xảy ra lỗi khi xóa khuôn mặt'
         }, status: :internal_server_error
+      end
+
+      def verify_id_card
+        image = params[:image]
+
+        if image.blank?
+          return render json: {
+            success: false,
+            error: 'Vui lòng tải lên ảnh CCCD/CMND để xác thực'
+          }, status: :unprocessable_entity
+        end
+
+        image_data = image.read
+        result = FaceVerificationService.verify_id_card(image_data)
+
+        if result
+          render json: {
+            success: true,
+            message: 'Xác thực CCCD/CMND thành công'
+          }, status: :ok
+        else
+          render json: {
+            success: false,
+            error: 'Xác thực CCCD/CMND thất bại. Vui lòng đảm bảo ảnh rõ nét và thông tin trùng khớp.'
+          }, status: :unauthorized
+        end
       end
 
       private
