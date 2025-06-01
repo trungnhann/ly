@@ -14,3 +14,6 @@ A comprehensive system for managing student information and certificates, enabli
 - Flexible metadata storage for students and certificates
 - Automatic notifications for expiring certificates
 - Face verification for certificate viewing
+
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/trungnhann/ly)
