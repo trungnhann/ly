@@ -27,7 +27,7 @@ class CertificateMetadata
   }
 
   field :certification_info, type: Hash, default: {
-    event: nil, # Sự kiện/Khóa học
+    event: nil,
     achievement: nil,     # Thành tích đạt được
     duration: nil,        # Thời lượng
     organizer: nil        # Đơn vị tổ chức

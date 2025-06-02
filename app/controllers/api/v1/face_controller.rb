@@ -77,8 +77,6 @@ module Api
         end
       end
 
-      # DELETE /api/v1/faces/:id
-      # Xóa đăng ký khuôn mặt
       def destroy
         student_id = params[:id]
 
@@ -104,12 +102,6 @@ module Api
             error: result[:message] || 'Không thể xóa khuôn mặt'
           }, status: :unprocessable_entity
         end
-      rescue StandardError => e
-        Rails.logger.error("Error deleting face: #{e.message}")
-        render json: {
-          success: false,
-          error: 'Đã xảy ra lỗi khi xóa khuôn mặt'
-        }, status: :internal_server_error
       end
 
       def verify_id_card
