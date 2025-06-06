@@ -66,16 +66,11 @@ module Api
         service = StudentImportService.new(temp_file.path)
         result = service.import
 
-        if result[:error_count].zero?
-          render json: {
-            message: "Import thành công #{result[:success_count]} sinh viên",
-            success_count: result[:success_count]
-          }, status: :ok
+        if result[:success]
+          render json: { message: result[:message] }, status: :ok
         else
           render json: {
-            message: "Import thất bại #{result[:error_count]} sinh viên",
-            success_count: result[:success_count],
-            error_count: result[:error_count],
+            message: result[:message],
             errors: result[:errors]
           }, status: :unprocessable_entity
         end

@@ -50,12 +50,13 @@ Rails.application.routes.draw do
 
       resources :audit_logs, only: %i[index]
 
-      resources :face do
+      resources :faces do
         collection do
           post :register
           post :identify
           post :verify_face_authentication
           post :verify_id_card
+          get :check_verification_status
         end
         member do
           delete :destroy

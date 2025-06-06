@@ -51,7 +51,7 @@ class FaceVerificationSetting < ApplicationRecord
   end
 
   def requires_id_card_verification?
-    failed_attempts > MAX_FAILED_ATTEMPTS
+    failed_attempts >= MAX_FAILED_ATTEMPTS
   end
 
   def enable_face_verification!

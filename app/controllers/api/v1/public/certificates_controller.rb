@@ -25,35 +25,14 @@ module Api
             }, status: :not_found
           end
 
+          # Kiểm tra xem certificate có phải là public không
+          unless @certificate.is_public
+            return render json: {
+              error: 'Certificate is not public'
+            }, status: :forbidden
+          end
+
           render json: CertificateSerializer.new(@certificate).serializable_hash, status: :ok
-        end
-
-        private
-
-        def handle_error(exception, status = :unprocessable_entity)
-          error_response(exception, 'An unexpected error occurred', status)
-        end
-
-        def handle_not_found(exception)
-          error_response(exception, exception.message, :not_found)
-        end
-
-        def handle_missing_param(exception)
-          error_response(exception, "Missing required parameter: #{exception.param}", :bad_request)
-        end
-
-        def handle_unknown_format(exception)
-          error_response(exception, 'Unsupported format requested', :not_acceptable)
-        end
-
-        def error_response(exception, message, status)
-          response = {
-            message: message,
-            errors: exception.respond_to?(:record) ? exception.record.errors.full_messages : exception.message
-          }
-
-          response[:backtrace] = exception.backtrace if Rails.env.development?
-          render json: response, status: status, content_type: 'application/json'
         end
       end
     end

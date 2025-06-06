@@ -6,6 +6,7 @@
 #  certificate_type :string           not null
 #  code             :string           not null, indexed
 #  expiry_date      :date
+#  is_public        :boolean          default(FALSE)
 #  is_verified      :boolean          default(TRUE)
 #  issue_date       :date             not null
 #  title            :string           not null

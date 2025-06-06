@@ -16,7 +16,7 @@ module FaceVerification
   end
 
   def requires_face_verification?
-    action == 'show' && controller == 'certificates'
+    action_name == 'show' && controller_name == 'certificates'
   end
 
   def verify_face(image_data)

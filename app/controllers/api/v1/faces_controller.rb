@@ -1,8 +1,9 @@
 module Api
   module V1
-    class FaceController < BaseController
+    class FacesController < BaseController
       before_action :set_face_client
       skip_before_action :check_face_verification, only: [:register]
+      before_action :set_face_verification_setting, only: %i[verify_face_authentication check_verification_status]
 
       # POST /api/v1/faces/register
       # Đăng ký khuôn mặt mới
@@ -53,6 +54,26 @@ module Api
         end
       end
 
+      def check_verification_status
+        if @verification_setting.requires_id_card_verification?
+          render json: {
+            success: true,
+            verification_type: 'id_card',
+            message: 'Yêu cầu xác thực CCCD',
+            failed_attempts: @verification_setting.failed_attempts,
+            max_attempts: FaceVerificationSetting::MAX_FAILED_ATTEMPTS
+          }
+        else
+          render json: {
+            success: true,
+            verification_type: 'face',
+            message: 'Yêu cầu xác thực khuôn mặt',
+            failed_attempts: @verification_setting.failed_attempts,
+            max_attempts: FaceVerificationSetting::MAX_FAILED_ATTEMPTS
+          }
+        end
+      end
+
       def verify_face_authentication
         image = params[:image]
         return render json: { error: 'Vui lòng tải lên ảnh để xác thực' }, status: :unprocessable_entity if image.blank?
@@ -61,16 +82,11 @@ module Api
         if verify_face(image_data)
           render json: { success: true, message: 'Xác thực khuôn mặt thành công' }
         else
-          setting = FaceVerificationSetting.find_by(admin_user: Current.user) do |s|
-            s.assign_attributes(FaceVerificationSetting.default_settings)
-          end
-
-          requires_id_card = setting.requires_id_card_verification?
-
+          requires_id_card = @verification_setting.requires_id_card_verification?
           render json: {
             success: false,
             error: 'Xác thực khuôn mặt thất bại',
-            failed_attempts: setting.failed_attempts,
+            failed_attempts: @verification_setting.failed_attempts,
             max_attempts: FaceVerificationSetting::MAX_FAILED_ATTEMPTS,
             requires_id_card_verification: requires_id_card
           }, status: :unauthorized
@@ -114,9 +130,7 @@ module Api
           }, status: :unprocessable_entity
         end
 
-        image_data = image.read
-        result = FaceVerificationService.verify_id_card(image_data)
-
+        result = IdVerificationService.call(image)
         if result
           render json: {
             success: true,
@@ -134,6 +148,10 @@ module Api
 
       def set_face_client
         @face_client = FaceRecognitionClient.new(Rails.application.credentials.fetch(:face_recognition_service_host))
+      end
+
+      def set_face_verification_setting
+        @verification_setting = FaceVerificationSetting.find_by(admin_user: Current.user)
       end
     end
   end

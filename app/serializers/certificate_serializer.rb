@@ -6,6 +6,7 @@
 #  certificate_type :string           not null
 #  code             :string           not null, indexed
 #  expiry_date      :date
+#  is_public        :boolean          default(FALSE)
 #  is_verified      :boolean          default(TRUE)
 #  issue_date       :date             not null
 #  title            :string           not null
@@ -25,7 +26,7 @@
 #
 class CertificateSerializer < BaseSerializer
   attributes :code, :title, :certificate_type, :issue_date, :expiry_date,
-             :is_verified, :student_id, :metadata_id, :created_at, :updated_at
+             :is_verified, :student_id, :metadata_id, :is_public, :created_at, :updated_at
 
   attribute :metadata do |object|
     object.metadata&.as_json(only: %i[

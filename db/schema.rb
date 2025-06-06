@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_30_133411) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_02_140701) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -94,6 +94,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_30_133411) do
     t.bigint "student_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_public", default: false
     t.index ["code"], name: "index_certificates_on_code", unique: true
     t.index ["student_id"], name: "index_certificates_on_student_id"
   end
