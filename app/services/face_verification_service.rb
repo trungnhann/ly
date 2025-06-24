@@ -14,7 +14,7 @@ class FaceVerificationService
     check_face_verification
   end
 
-  def verify_face(image_data)
+  def verify_face(image_data, is_disable)
     return false unless current_user&.user_type == 'student'
 
     begin
@@ -23,7 +23,11 @@ class FaceVerificationService
 
       if result[:success] && result[:student_id].to_i == current_user.student_id
         verification_setting.reset_attempts!
-        session[:last_face_verification] = Time.current.iso8601
+        session[:last_face_verification] = if is_disable
+                                             nil
+                                           else
+                                             Time.current.iso8601
+                                           end
         true
       else
         verification_setting.increment_failed_attempts!

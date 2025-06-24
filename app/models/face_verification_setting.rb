@@ -5,7 +5,7 @@
 #  id                        :bigint           not null, primary key
 #  failed_attempts           :integer          default(0)
 #  last_attempt_at           :datetime
-#  require_face_verification :boolean          default(TRUE), not null
+#  require_face_verification :boolean          default(FALSE), not null
 #  verification_timeout      :integer          default(1800), not null
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null

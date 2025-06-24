@@ -3,10 +3,14 @@
 # Table name: students
 #
 #  id             :bigint           not null, primary key
+#  address        :string
 #  code           :string           not null, indexed
 #  email          :string           not null, indexed
 #  full_name      :string           not null
 #  id_card_number :string           not null, indexed
+#  major          :string
+#  phone          :string
+#  specialization :string
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #

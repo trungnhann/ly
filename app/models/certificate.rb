@@ -46,8 +46,9 @@ class Certificate < ApplicationRecord
 
   attr_accessor :metadata_issuer, :metadata_description, :metadata_degree_level,
                 :metadata_degree_major, :metadata_degree_specialization, :metadata_degree_grade,
-                :metadata_degree_graduation_year, :metadata_certificate_provider,
-                :metadata_certificate_field, :metadata_certificate_score, :metadata_certificate_level,
+                :metadata_degree_graduation_year,
+                :metadata_certificate_provider, :metadata_certificate_field, :metadata_certificate_score,
+                :metadata_certificate_level,
                 :metadata_certification_event, :metadata_certification_achievement, :metadata_certification_duration,
                 :metadata_certification_organizer
 

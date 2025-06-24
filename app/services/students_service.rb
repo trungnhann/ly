@@ -5,7 +5,7 @@ class StudentsService
       student.avatar.attach(params[:avatar]) if params[:avatar].present?
 
       if student.save!
-        admin_user = AdminUser.create!(
+        AdminUser.create!(
           email: "#{student.code}@actvn.edu.vn",
           password: 'password123',
           password_confirmation: 'password123',
@@ -14,9 +14,6 @@ class StudentsService
           full_name: student.full_name
         )
 
-        admin_user.create_face_verification_setting(FaceVerificationSetting.default_settings)
-
-        student.create_or_update_metadata(params)
         { data: StudentSerializer.new(student).serializable_hash, status: :created }
       else
         { errors: student.errors.full_messages, status: :unprocessable_entity }
@@ -43,7 +40,6 @@ class StudentsService
         student.avatar.attach(params[:avatar])
       end
 
-      student.create_or_update_metadata(params)
       {
         data: StudentSerializer.new(student).serializable_hash,
         status: :ok
@@ -59,7 +55,6 @@ class StudentsService
   def destroy(student)
     ActiveRecord::Base.transaction do
       student.avatar.purge if student.avatar.attached?
-      student.metadata&.delete
 
       student.admin_user&.destroy!
 

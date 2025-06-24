@@ -3,7 +3,8 @@ module Api
     class FacesController < BaseController
       before_action :set_face_client
       skip_before_action :check_face_verification, only: [:register]
-      before_action :set_face_verification_setting, only: %i[verify_face_authentication check_verification_status]
+      before_action :set_face_verification_setting, only: %i[verify_face_authentication check_verification_status
+                                                             verify_id_card]
 
       # POST /api/v1/faces/register
       # Đăng ký khuôn mặt mới
@@ -78,8 +79,9 @@ module Api
         image = params[:image]
         return render json: { error: 'Vui lòng tải lên ảnh để xác thực' }, status: :unprocessable_entity if image.blank?
 
+        is_disable = params[:is_disable] || false
         image_data = image.read
-        if verify_face(image_data)
+        if verify_face(image_data, is_disable:)
           render json: { success: true, message: 'Xác thực khuôn mặt thành công' }
         else
           requires_id_card = @verification_setting.requires_id_card_verification?
@@ -107,6 +109,7 @@ module Api
         result = @face_client.delete_face(student_id)
 
         if result[:success]
+          session[:last_face_verification] = nil
           render json: {
             success: true,
             message: 'Xóa khuôn mặt thành công',
@@ -130,8 +133,9 @@ module Api
           }, status: :unprocessable_entity
         end
 
-        result = IdVerificationService.call(image)
+        result = FptAi::IdCardVerifyService.call(image_file: image)
         if result
+          @verification_setting.reset_attempts!
           render json: {
             success: true,
             message: 'Xác thực CCCD/CMND thành công'

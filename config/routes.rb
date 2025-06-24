@@ -38,6 +38,9 @@ Rails.application.routes.draw do
         collection do
           get :find_by_code
         end
+        member do
+          patch :toggle_public
+        end
       end
 
       resources :notifications do
@@ -66,7 +69,9 @@ Rails.application.routes.draw do
       resource :face_verification_setting, only: %i[show update]
 
       namespace :public do
-        get 'certificates/:code', to: 'certificates#lookup'
+        get 'certificates/:code', to: 'certificates#lookup', as: 'certificate'
+        # Thêm route mới cho tìm kiếm theo CCCD và mã chứng chỉ
+        get 'search', to: 'certificates#search', as: 'certificate_search'
       end
     end
   end

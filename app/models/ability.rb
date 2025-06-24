@@ -27,7 +27,7 @@ class Ability
 
     can %i[read update], Student, id: student_id
     can :manage, FaceVerificationSetting, id: student_id
-    can :read, Certificate, student_id: student_id
+    can %i[read toggle_public], Certificate, student_id: student_id
   end
 
   def guest_abilities; end

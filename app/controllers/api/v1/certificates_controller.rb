@@ -1,7 +1,7 @@
 module Api
   module V1
     class CertificatesController < BaseController
-      load_and_authorize_resource
+      load_and_authorize_resource except: [:create]
       def index
         certificates = Certificate.accessible_by(Ability.new(Current.user))
         certificates = certificates.where(student_id: params[:student_id]) if params[:student_id].present?
@@ -43,11 +43,24 @@ module Api
                status: result[:status]
       end
 
+      def toggle_public
+        @certificate.update(is_public: !@certificate.is_public)
+
+        response_data = CertificateSerializer.new(@certificate).serializable_hash
+
+        if @certificate.is_public
+          public_url = Rails.application.routes.url_helpers.api_v1_public_certificate_url(code: @certificate.code)
+          response_data[:data][:attributes][:public_url] = public_url
+        end
+
+        render json: response_data, status: :ok
+      end
+
       private
 
       def certificate_params
         params.expect(
-          certificate: [:code, :title, :certificate_type, :issue_date, :expiry_date, :is_verified, :student_id, :file,
+          certificate: [:code, :title, :certificate_type, :issue_date, :expiry_date, :is_verified, :student_code, :file,
                         { metadata: [
                           :issuer, :description,
                           { degree_info: %i[level major specialization grade graduation_year] },

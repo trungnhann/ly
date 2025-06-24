@@ -26,19 +26,20 @@ module Api
       end
 
       def scan_id_card
-        id_card_data = FptIdCardService.call(params[:image])
+        result = FptAi::IdCardVerifyService.call(image_file: params[:image])
+        raise StandardError, result.error.to_s unless result.success?
+
+        id_card_data = result.value[:id_card_data]
         student = Student.find_by(id_card_number: id_card_data[:number])
 
         if student
-          render json: StudentSerializer.new(student, include: [:certificates]).serializable_hash,
-                 status: :ok
+          json_response(student, StudentSerializer, include: [:certificates])
         else
-          render json: { error: 'Student not found' }, status: :not_found
+          render json: {
+            error: 'Student not found',
+            id_card_data: id_card_data
+          }, status: :not_found
         end
-      rescue ServiceError => e
-        render json: { error: e.message }, status: :unprocessable_entity
-      rescue StandardError => e
-        render json: { error: e.message }, status: :internal_server_error
       end
 
       def create
@@ -63,15 +64,17 @@ module Api
         end
 
         temp_file = params[:file].tempfile
-        service = StudentImportService.new(temp_file.path)
-        result = service.import
+        result = Students::ImportStudentFromExcelService.call(file_path: temp_file.path)
 
-        if result[:success]
-          render json: { message: result[:message] }, status: :ok
+        if result.success?
+          render json: {
+            message: result.value[:message],
+            imported_count: result.value[:imported_count]
+          }, status: :ok
         else
           render json: {
-            message: result[:message],
-            errors: result[:errors]
+            message: 'Import failed',
+            errors: result.error.to_s
           }, status: :unprocessable_entity
         end
       end
@@ -81,7 +84,7 @@ module Api
       def student_params
         params.expect(
           student: %i[code full_name id_card_number email avatar
-                      metadata_phone metadata_major metadata_specialization metadata_address]
+                      phone major specialization address]
         )
       end
     end

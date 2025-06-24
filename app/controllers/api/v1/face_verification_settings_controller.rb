@@ -12,6 +12,9 @@ module Api
 
       def update
         if @face_verification_setting.update(face_verification_setting_params)
+
+          session[:last_face_verification] = nil if @face_verification_setting.require_face_verification
+
           render json: {
             require_face_verification: @face_verification_setting.require_face_verification
           }, status: :ok

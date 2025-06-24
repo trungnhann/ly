@@ -32,7 +32,42 @@ module Api
             }, status: :forbidden
           end
 
-          render json: CertificateSerializer.new(@certificate).serializable_hash, status: :ok
+          render json: PublicCertificateSerializer.new(@certificate).serializable_hash, status: :ok
+        end
+
+        def search
+          id_card_number = params[:id_card_number]
+          certificate_code = params[:certificate_code]
+
+          if id_card_number.blank? || certificate_code.blank?
+            return render json: {
+              error: 'Số căn cước công dân và mã chứng chỉ là bắt buộc'
+            }, status: :bad_request
+          end
+
+          student = Student.find_by(id_card_number: id_card_number)
+
+          if student.nil?
+            return render json: {
+              error: 'Không tìm thấy sinh viên với số căn cước công dân này'
+            }, status: :not_found
+          end
+
+          certificate = Certificate.find_by(code: certificate_code, student_id: student.id)
+
+          if certificate.nil?
+            return render json: {
+              error: 'Không tìm thấy chứng chỉ phù hợp với thông tin đã cung cấp'
+            }, status: :not_found
+          end
+
+          # unless certificate.is_public
+          #   return render json: {
+          #     error: 'Chứng chỉ này không được công khai'
+          #   }, status: :forbidden
+          # end
+
+          render json: PublicCertificateSerializer.new(certificate).serializable_hash, status: :ok
         end
       end
     end

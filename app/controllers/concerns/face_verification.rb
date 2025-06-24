@@ -19,7 +19,7 @@ module FaceVerification
     action_name == 'show' && controller_name == 'certificates'
   end
 
-  def verify_face(image_data)
-    FaceVerificationService.new(session, params).verify_face(image_data)
+  def verify_face(image_data, is_disable:)
+    FaceVerificationService.new(session, params).verify_face(image_data, is_disable)
   end
 end

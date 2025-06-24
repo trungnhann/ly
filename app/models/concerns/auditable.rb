@@ -30,7 +30,8 @@ module Auditable
       record_id: id,
       action:,
       audited_changes: changes,
-      admin_user_id: Current.user&.id
+      editor_name: Current.user&.full_name,
+      editor_email: Current.user&.email
     )
   end
 

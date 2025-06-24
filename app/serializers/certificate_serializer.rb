@@ -39,5 +39,11 @@ class CertificateSerializer < BaseSerializer
     Rails.application.routes.url_helpers.rails_blob_url(object.file, only_path: false) if object.file.attached?
   end
 
+  attribute :public_url do |object|
+    if object.is_public
+      Rails.application.routes.url_helpers.api_v1_public_certificate_url(code: object.code)
+    end
+  end
+
   belongs_to :student, serializer: StudentSerializer
 end

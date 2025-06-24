@@ -32,7 +32,14 @@ class CertificatesService
   end
 
   def create(params)
-    certificate = Certificate.new(params.except(:file, :metadata))
+    return { errors: ['Không tìm thấy sinh viên'], status: :unprocessable_entity } if params[:student_code].blank?
+
+    student = Student.find_by(code: params[:student_code])
+    return { errors: ["Không tìm thấy sinh viên với mã #{params[:student_code]}"], status: :not_found } unless student
+
+    params = params.merge(student_id: student.id)
+
+    certificate = Certificate.new(params.except(:file, :metadata, :student_code))
 
     attach_file(certificate, params[:file]) if params[:file].present?
 

@@ -1,4 +1,4 @@
-class IdVerificationService
+class IdCardVerificationService
   def self.call(id_card_image)
     new(id_card_image).call
   end
@@ -20,20 +20,15 @@ class IdVerificationService
   def verify_id_card
     return false unless current_user&.user_type == 'student'
 
-    begin
-      id_card_data = FptIdCardService.new(@id_card_image).call
-      student = current_user.student
-      success = validate_id_card_data(id_card_data, student)
+    id_card_data = FptAi::IdCardVerifyService.call(image_file: @id_card_image)
+    student = current_user.student
+    success = validate_id_card_data(id_card_data, student)
 
-      if success
-        setting.reset_attempts!
-        true
-      else
-        Rails.logger.error('Xác thực CCCD thất bại: Thông tin CCCD không khớp với thông tin sinh viên')
-        false
-      end
-    rescue FptIdCardError => e
-      Rails.logger.error("Lỗi khi xác thực CCCD: #{e.message}")
+    if success
+      setting.reset_attempts!
+      true
+    else
+      Rails.logger.error('Xác thực CCCD thất bại: Thông tin CCCD không khớp với thông tin sinh viên')
       false
     end
   end

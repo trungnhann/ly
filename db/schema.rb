@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_02_140701) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_22_100107) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -76,10 +76,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_02_140701) do
     t.integer "record_id", null: false
     t.string "action", null: false
     t.jsonb "audited_changes", null: false
-    t.bigint "admin_user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["admin_user_id"], name: "index_audit_logs_on_admin_user_id"
+    t.string "editor_name"
+    t.string "editor_email"
     t.index ["record_type", "record_id"], name: "index_audit_logs_on_record_type_and_record_id"
   end
 
@@ -102,7 +102,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_02_140701) do
   create_table "face_verification_settings", force: :cascade do |t|
     t.bigint "admin_user_id", null: false
     t.integer "verification_timeout", default: 1800, null: false
-    t.boolean "require_face_verification", default: true, null: false
+    t.boolean "require_face_verification", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "failed_attempts", default: 0
@@ -251,6 +251,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_02_140701) do
     t.string "email", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "phone"
+    t.string "major"
+    t.string "specialization"
+    t.string "address"
     t.index ["code"], name: "index_students_on_code", unique: true
     t.index ["email"], name: "index_students_on_email", unique: true
     t.index ["id_card_number"], name: "index_students_on_id_card_number", unique: true
@@ -259,7 +263,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_02_140701) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "admin_users", "students"
-  add_foreign_key "audit_logs", "admin_users"
   add_foreign_key "certificates", "students"
   add_foreign_key "face_verification_settings", "admin_users"
   add_foreign_key "notifications", "admin_users"

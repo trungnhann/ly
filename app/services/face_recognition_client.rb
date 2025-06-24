@@ -16,13 +16,11 @@ class FaceRecognitionClient
       return { success: false, message: e.message }
     end
 
-    # Tạo request
     request = FaceRecognition::RegisterRequest.new(
       student_id: student_id,
       image_base64: image_base64
     )
 
-    # Gửi request
     begin
       response = @stub.register_face(request)
       {
@@ -56,7 +54,6 @@ class FaceRecognitionClient
   end
 
   def identify_face(image_path)
-    # Đọc và mã hóa file ảnh thành base64
     begin
       image_data = File.read(image_path)
       image_base64 = Base64.strict_encode64(image_data)
@@ -65,12 +62,10 @@ class FaceRecognitionClient
       return { success: false, message: e.message }
     end
 
-    # Tạo request
     request = FaceRecognition::IdentifyRequest.new(
       image_base64: image_base64
     )
 
-    # Gửi request
     begin
       response = @stub.identify_face(request)
       {

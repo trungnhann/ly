@@ -49,10 +49,4 @@ class AdminUser < ApplicationRecord
   validates :email, presence: true, uniqueness: true
 
   after_create :create_face_verification_setting
-
-  private
-
-  def create_face_verification_setting
-    create_face_verification_setting! if user_type_student?
-  end
 end
